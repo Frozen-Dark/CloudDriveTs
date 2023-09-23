@@ -1,0 +1,55 @@
+.app_dark {
+    --color_background: #313131;
+    --color_background_content: #353535;
+    --color_background_secondary: #333333;
+    --color_background_tertiary: #292929;
+    --separator: #414141;
+
+    --color_background_contrast--hover: #EBEDF0;
+    --color_background_contrast--active: #D7D8DB;
+
+    --color_background_modal: #292929;
+    --color_background_modal--hover: #323232;
+    --color_background_modal--active: #3A3A3A;
+
+    --color_background_modal_inverse: #FFFFFF;
+    --color_background_modal_inverse--hover: #EBEDF0;
+    --color_background_modal_inverse--active: #D7D8DB;
+
+
+    --color_skeleton_from: #292929;
+    --color_skeleton_to: #333333;
+}
+
+.app_text {
+    --color_text_primary: #E1E3E6;
+    --color_text_primary--hover: #E2E4E7;
+    --color_text_primary--active: #E3E5E8;
+    --color_text_primary_invariably--hover: #3B3B3B;
+    --color_text_primary_invariably--active: #434343;
+
+    --color_text_secondary: #B1B1B1;
+
+    --color_text_tertiary: #828282;
+    --color_text_tertiary--hover: #878787;
+    --color_text_tertiary--active: #8C8C8C;
+
+    --color_text_positive--hover: #52B652;
+    --color_text_positive--active: #59B959;
+
+    --color_text_negative: #FF5C5C;
+    --color_text_negative--hover: #FF6363;
+    --color_text_negative--active: #FF6969;
+
+    --color_text_muted: #CCCCCC;
+    --color_text_muted--hover: #CECECE;
+    --color_text_muted--active: #D0D0D0;
+
+    --color_link_contrast: #CCCCCC;
+    --color_link_contrast--hover: #CECECE;
+    --color_link_contrast--active: #D0D0D0;
+
+    --color_text_button: #E1E3E6;
+    --color_text_button--hover: #E2E4E7;
+    --color_text_button--active: #E3E5E8;
+}
