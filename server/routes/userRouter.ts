@@ -1,8 +1,10 @@
-import Router from "express"
-import userController from "../controllers/userController";
-// @ts-ignore
-const router = new Router();
+import Router from "express";
+import userController from "@controllers/userController";
+import authMiddleware from "@middlewares/authMiddleware";
+const router = Router();
 
-router.post("/registration", userController.registration)
+router.post("/registration", userController.registration);
+router.post("/login", () => {});
+router.get("/authorization", authMiddleware, () => {});
 
-export default router
+export default router;

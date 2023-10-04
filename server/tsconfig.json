@@ -3,6 +3,15 @@
     "target": "es2018",
     "module": "commonjs",
     "baseUrl": ".",
+    "paths": {
+      "@models/*": ["models/*"],
+      "@controllers/*": ["controllers/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@services/*": ["services/*"],
+      "@routes/*": ["routes/*"],
+      "@db": ["./db.ts"],
+      "@dto/*": ["dto/*"]
+    },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
