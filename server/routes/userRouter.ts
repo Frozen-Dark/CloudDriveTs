@@ -4,7 +4,9 @@ import authMiddleware from "@middlewares/authMiddleware";
 const router = Router();
 
 router.post("/registration", userController.registration);
-router.post("/login", () => {});
-router.get("/authorization", authMiddleware, () => {});
+router.post("/login", userController.login);
+
+router.get("/refresh", userController.refresh);
+router.get("/authorization", authMiddleware, userController.authorization);
 
 export default router;

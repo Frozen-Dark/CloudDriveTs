@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { ModelStatic, Model, Optional } from "sequelize";
 import sequelize from "@db";
 
-export interface UserAttributes {
+interface UserAttributes {
 	id: number;
 	email: string;
 	password: string;
@@ -18,7 +18,7 @@ interface UserCreationAttributes extends Optional<UserAttributes, "id"> {
 	id?: number;
 }
 
-export interface FolderAttributes {
+interface FolderAttributes {
 	id?: number;
 	userId: number;
 	folderName: string;
@@ -27,7 +27,7 @@ export interface FolderAttributes {
 	hasLink?: boolean;
 }
 
-export interface FolderCreationAttributes extends Optional<FolderAttributes, "id"> {
+interface FolderCreationAttributes extends Optional<FolderAttributes, "id"> {
 	userId: number;
 	folderName: string;
 }
@@ -44,12 +44,14 @@ interface FileAttributes {
 
 interface FileCreationAttributes extends Optional<FileAttributes, "id"> {}
 
-export interface TokenAttributes {
-	id?: number;
+interface TokenAttributes {
+	id: number;
 	userId: number;
 	refreshToken: string;
-	deviceInfo?: string;
-	ip?: string;
+	ip: string;
+	platform: string;
+	browser: string;
+	browserVersion?: string;
 }
 
 interface TokenCreationAttributes extends Optional<TokenAttributes, "id"> {}
@@ -153,8 +155,10 @@ const Token: ModelStatic<Model<TokenAttributes, TokenCreationAttributes>> = sequ
 		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 		userId: { type: DataTypes.INTEGER, references: { model: User, key: "id" } },
 		refreshToken: { type: DataTypes.STRING },
-		deviceInfo: { type: DataTypes.STRING }, // Информация об устройстве пользователя
-		ip: { type: DataTypes.STRING } // IP-адрес устройства
+		ip: { type: DataTypes.STRING },
+		platform: { type: DataTypes.STRING },
+		browser: { type: DataTypes.STRING },
+		browserVersion: { type: DataTypes.STRING }
 	},
 	{
 		indexes: [
@@ -264,3 +268,18 @@ Folder.hasMany(Folder, { foreignKey: "parentId", as: "Subfolders" });
 Folder.belongsTo(Folder, { foreignKey: "parentId", as: "ParentFolder" });
 
 export { User, Folder, File, Token, SharedLink, SharedLinkUsers };
+
+export {
+	UserAttributes,
+	UserCreationAttributes,
+	FolderAttributes,
+	FolderCreationAttributes,
+	FileAttributes,
+	FileCreationAttributes,
+	TokenAttributes,
+	TokenCreationAttributes,
+	SharedLinkAttributes,
+	SharedLinkCreationAttributes,
+	SharedLinkUsersAttributes,
+	SharedLinkUsersCreationAttributes
+};

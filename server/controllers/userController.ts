@@ -1,15 +1,85 @@
 import userService from "@services/userService";
-import { customResponse, customRequest } from "@routes/customInterface";
+import { Request, Response } from "express";
+import { UserCreationAttributes } from "@models/models";
+import { UseragentData } from "@middlewares/userAgentMiddleware";
 
 class UserController {
-	async registration(req: customRequest, res: customResponse) {
+	async registration(req: Request, res: Response) {
 		try {
-			const { email, password } = req.body;
-			const userData = await userService.registration({ email, password });
+			const { email, password }: UserCreationAttributes = req.body;
+			const useragentData = req.useragentData as UseragentData;
+
+			const userData = await userService.registration({ email, password, useragentData });
+			res.cookie("refreshToken", userData.tokens.refreshToken, {
+				maxAge: 30 * 24 * 60 * 60 * 1000,
+				httpOnly: true
+			});
+
 			return res.json(userData);
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ message: "registration error" });
+		}
+	}
+
+	async login(req: Request, res: Response) {
+		try {
+			const { email, password }: UserCreationAttributes = req.body;
+			const useragentData = req.useragentData as UseragentData;
+			const userData = await userService.login({ email, password, useragentData });
+
+			res.cookie("refreshToken", userData.tokens.refreshToken, {
+				maxAge: 30 * 24 * 60 * 60 * 1000,
+				httpOnly: true
+			});
+
+			return res.json(userData);
+		} catch (e) {
+			console.log(e);
+			return res.status(400).json({ message: "login error" });
+		}
+	}
+
+	async authorization(req: Request, res: Response) {
+		try {
+			const { refreshToken } = req.cookies;
+			if (!refreshToken) {
+				return res.status(400).json({ message: "refresh out" });
+			}
+
+			const { id } = req.user;
+			const useragentData = req.useragentData!;
+			const userData = await userService.authorization({ id, useragentData, refreshToken });
+
+			res.cookie("refreshToken", userData.tokens.refreshToken, {
+				maxAge: 30 * 24 * 60 * 60 * 1000,
+				httpOnly: true
+			});
+
+			return res.json(userData);
+		} catch (e) {
+			console.log(e);
+			return res.status(400).json({ message: "refresh error" });
+		}
+	}
+
+	async refresh(req: Request, res: Response) {
+		try {
+			const { refreshToken } = req.cookies;
+			if (!refreshToken) {
+				return res.status(400).json({ message: "refresh out" });
+			}
+			const useragentData = req.useragentData as UseragentData;
+			const userData = await userService.refresh({ refreshToken, useragentData });
+			res.cookie("refreshToken", userData.tokens.refreshToken, {
+				maxAge: 30 * 24 * 60 * 60 * 1000,
+				httpOnly: true
+			});
+
+			return res.json(userData);
+		} catch (e) {
+			console.log(e);
+			return res.status(400).json({ message: "refresh error" });
 		}
 	}
 }

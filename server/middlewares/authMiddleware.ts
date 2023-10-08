@@ -1,9 +1,15 @@
-import { NextFunction, Response } from "express";
-import { UserAttributes } from "@models/models";
-import { customRequest } from "@routes/customInterface";
-import tokenService from "@services/tokenService";
+import { NextFunction, Request, Response } from "express";
+import tokenService, { UserDecoded } from "@services/tokenService";
 
-function authMiddleware(req: customRequest, res: Response, next: NextFunction) {
+declare global {
+	namespace Express {
+		interface Request {
+			user: UserDecoded;
+		}
+	}
+}
+
+function authMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
 		const authorizationHeader = req.headers.authorization;
 		const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
@@ -15,13 +21,12 @@ function authMiddleware(req: customRequest, res: Response, next: NextFunction) {
 		const userData = tokenService.validateAccessToken(accessToken);
 
 		if (!userData) {
-			return res.status(403);
+			return res.status(403).json({ message: "Доступ запрещен" });
 		}
-
-		req.user = userData as UserAttributes;
+		req.user = userData as UserDecoded;
 		next();
 	} catch (e) {
-		next(res.status(401).json({ message: "Не авторизован" }));
+		return res.status(401).json({ message: "Не авторизован" });
 	}
 }
 
