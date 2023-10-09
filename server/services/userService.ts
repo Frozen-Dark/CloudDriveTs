@@ -58,9 +58,10 @@ class UserService {
 
 		const userDto = new UserDto(user.dataValues);
 		const tokens = tokenService.generateTokens({ ...userDto });
-		await tokenService.saveToken({ userId: userDto.id, refreshToken: tokens.refreshToken, ...useragentData });
 
-		await fileService.createDir({ userId: userDto.id, folderName: "userFolder" });
+		await tokenService.createNewToken({ userId: userDto.id, refreshToken: tokens.refreshToken, ...useragentData });
+
+		await fileService.createDir({ userId: userDto.id, folderName: String(userDto.id) });
 
 		return { tokens, user: userDto };
 	}
@@ -76,7 +77,7 @@ class UserService {
 		const userDto = new UserDto(user.dataValues);
 
 		const tokens = tokenService.generateTokens({ ...userDto });
-		await tokenService.saveToken({ userId: userDto.id, refreshToken: tokens.refreshToken, ...useragentData });
+		await tokenService.createNewToken({ userId: userDto.id, refreshToken: tokens.refreshToken, ...useragentData });
 
 		return { tokens, user: userDto };
 	}

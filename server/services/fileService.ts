@@ -7,7 +7,6 @@ const path = "C:\\CloudDisk\\UserStorage";
 class FileService {
 	async createDir({ userId, folderName }: { userId: number; folderName: string }) {
 		const folder = await Folder.create({ userId, folderName });
-		await folder.save();
 
 		return new Promise((res, rej) => {
 			try {

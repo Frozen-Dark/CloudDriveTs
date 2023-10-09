@@ -52,6 +52,7 @@ interface TokenAttributes {
 	platform: string;
 	browser: string;
 	browserVersion?: string;
+	updatedAt?: Date;
 }
 
 interface TokenCreationAttributes extends Optional<TokenAttributes, "id"> {}
