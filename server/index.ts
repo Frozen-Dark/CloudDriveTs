@@ -6,23 +6,19 @@ import sequelize from "./db";
 import cookieParser from "cookie-parser";
 import indexRouter from "./routes/index";
 import useragent from "express-useragent";
-import cors from "cors";
 import userAgentMiddleware from "@middlewares/userAgentMiddleware";
+import corsOptions from "@middlewares/corsOptions";
+import minoMiddleware from "@middlewares/minoMiddleware";
 
 const PORT = process.env.PORT || 6000;
 const app = express();
-const corsOptions = {
-	credentials: true,
-	methods: ["GET", "PUT", "PATCH", "POST", "DELETE"],
-	allowedHeaders: ["Content-Type", "Authorization", "X-Forwarded-For", "Origin", "Accept", "Proxy-Authorization"],
-	origin: "*"
-};
 
-app.use(cors(corsOptions));
+app.use(corsOptions);
 app.use(useragent.express());
 app.use(userAgentMiddleware);
 app.use(express.json());
 app.use(cookieParser());
+app.use(minoMiddleware);
 
 app.use("/api", indexRouter);
 

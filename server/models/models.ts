@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Op, Sequelize } from "sequelize";
 import { ModelStatic, Model, Optional } from "sequelize";
 import sequelize from "@db";
 
@@ -19,30 +19,31 @@ interface UserCreationAttributes extends Optional<UserAttributes, "id"> {
 }
 
 interface FolderAttributes {
-	id?: number;
+	id: number;
 	userId: number;
 	folderName: string;
-	path?: string;
 	parentId?: number;
 	hasLink?: boolean;
+	children?: Array<number>;
 }
 
 interface FolderCreationAttributes extends Optional<FolderAttributes, "id"> {
-	userId: number;
-	folderName: string;
+	id?: number;
 }
 
 interface FileAttributes {
-	id?: number;
+	id: number;
 	userId: number;
 	fileName: string;
 	size: number;
 	extension: string;
-	folderId: number;
+	parentId: number;
 	hasLink?: boolean;
 }
 
-interface FileCreationAttributes extends Optional<FileAttributes, "id"> {}
+interface FileCreationAttributes extends Optional<FileAttributes, "id"> {
+	id?: number;
+}
 
 interface TokenAttributes {
 	id: number;
@@ -74,7 +75,9 @@ interface SharedLinkUsersAttributes {
 	sharedLinkId: number;
 }
 
-interface SharedLinkUsersCreationAttributes extends Optional<SharedLinkUsersAttributes, "id"> {}
+interface SharedLinkUsersCreationAttributes extends Optional<SharedLinkUsersAttributes, "id"> {
+	id?: number;
+}
 
 const User: ModelStatic<Model<UserAttributes, UserCreationAttributes>> = sequelize.define(
 	"user",
@@ -104,10 +107,10 @@ const Folder: ModelStatic<Model<FolderAttributes, FolderCreationAttributes>> = s
 	{
 		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 		userId: { type: DataTypes.INTEGER, references: { model: User, key: "id" } },
-		folderName: { type: DataTypes.STRING, allowNull: false }, // Использование ID папки как имени на жестком диске
-		path: { type: DataTypes.STRING(512) },
+		folderName: { type: DataTypes.STRING, allowNull: false },
 		parentId: { type: DataTypes.INTEGER },
-		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false }
+		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false },
+		children: { type: DataTypes.ARRAY(DataTypes.INTEGER) }
 	},
 	{
 		indexes: [
@@ -117,10 +120,25 @@ const Folder: ModelStatic<Model<FolderAttributes, FolderCreationAttributes>> = s
 			},
 			{
 				name: "IDX_FOLDERNAME_PARENTID",
-				fields: ["folderName", "parentId"], // не допустит две отдинаковых папки с одинаком именем
+				fields: ["folderName", "parentId"], // не допустит две одинаковых папки с одинаковым именем
 				unique: true
 			}
-		]
+		],
+		hooks: {
+			beforeUpdate: async (folder) => {
+				// Проверка на наличие папки с таким же именем в родительской папке
+				const duplicateFolder = await Folder.findOne({
+					where: {
+						folderName: folder.dataValues.folderName,
+						parentId: folder.dataValues.parentId,
+						id: { [Op.ne]: folder.dataValues.id } // Исключение текущей папки из поиска
+					}
+				});
+				if (duplicateFolder) {
+					throw new Error("Папка с таким именем уже существует в этой родительской папке.");
+				}
+			}
+		}
 	}
 );
 
@@ -132,7 +150,7 @@ const File: ModelStatic<Model<FileAttributes, FileCreationAttributes>> = sequeli
 		fileName: { type: DataTypes.STRING },
 		size: { type: DataTypes.BIGINT },
 		extension: { type: DataTypes.STRING },
-		folderId: { type: DataTypes.INTEGER, references: { model: Folder, key: "id" } },
+		parentId: { type: DataTypes.INTEGER, references: { model: Folder, key: "id" } },
 		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false }
 	},
 	{
@@ -142,11 +160,27 @@ const File: ModelStatic<Model<FileAttributes, FileCreationAttributes>> = sequeli
 				fields: ["userId"]
 			},
 			{
-				name: "IDX_FILENAME_FOLDERID_EXTENSION",
-				fields: ["fileName", "folderId", "extension"], // не допустит два одинаковых файла с одинакомы именем и расширением в одной папке
+				name: "IDX_FILENAME_PARENTID_EXTENSION",
+				fields: ["fileName", "parentId", "extension"], // не допустит два одинаковых файла с одинаковым именем и расширением в одной папке
 				unique: true
 			}
-		]
+		],
+		hooks: {
+			beforeUpdate: async (file, options) => {
+				// Проверка на наличие файла с таким же именем и расширением в папке
+				const duplicateFile = await File.findOne({
+					where: {
+						fileName: file.dataValues.fileName,
+						extension: file.dataValues.extension,
+						parentId: file.dataValues.parentId,
+						id: { [Op.ne]: file.dataValues.id } // Исключение текущего файла из поиска
+					}
+				});
+				if (duplicateFile) {
+					throw new Error("Файл с таким именем и расширением уже существует в этой папке.");
+				}
+			}
+		}
 	}
 );
 
@@ -261,8 +295,8 @@ User.hasMany(Folder, { foreignKey: "userId", onDelete: "CASCADE" });
 Folder.belongsTo(User, { foreignKey: "userId" });
 
 // Связь папка / Файл
-Folder.hasMany(File, { foreignKey: "folderId", onDelete: "CASCADE" });
-File.belongsTo(Folder, { foreignKey: "folderId" });
+Folder.hasMany(File, { foreignKey: "parentId", onDelete: "CASCADE" });
+File.belongsTo(Folder, { foreignKey: "parentId" });
 
 // Связь папка / папка (родительская и дочерние)
 Folder.hasMany(Folder, { foreignKey: "parentId", as: "Subfolders" });

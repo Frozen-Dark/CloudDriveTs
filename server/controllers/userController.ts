@@ -1,8 +1,7 @@
 import userService from "@services/userService";
 import { Request, Response } from "express";
 import { UserCreationAttributes } from "@models/models";
-import { UseragentData } from "@middlewares/userAgentMiddleware";
-import tokenService from "@services/tokenService";
+import tokenService, { UserDecoded } from "@services/tokenService";
 
 class UserController {
 	async registration(req: Request, res: Response) {
@@ -10,7 +9,12 @@ class UserController {
 			const { email, password }: UserCreationAttributes = req.body;
 			const useragentData = req.useragentData;
 
-			const userData = await userService.registration({ email, password, useragentData });
+			const userData = await userService.registration({
+				email,
+				password,
+				useragentData,
+				minioClient: req.minioClient
+			});
 			res.cookie("refreshToken", userData.tokens.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
 				httpOnly: true
@@ -45,15 +49,17 @@ class UserController {
 
 	async authorization(req: Request, res: Response) {
 		try {
+			const authorizationHeader = req.headers.authorization;
+			const useragentData = req.useragentData;
 			const { refreshToken } = req.cookies;
-			if (!refreshToken) {
-				return res.status(400).json({ message: "refresh out" });
+
+			const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
+
+			if (!accessToken || !refreshToken) {
+				return res.status(401).json({ message: "Не авторизован" });
 			}
 
-			const { id } = req.user;
-			const useragentData = req.useragentData;
-
-			const userData = await userService.authorization({ id, useragentData, refreshToken });
+			const userData = await userService.refresh({ useragentData, refreshToken });
 
 			res.cookie("refreshToken", userData.tokens.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,

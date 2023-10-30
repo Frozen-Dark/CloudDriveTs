@@ -42,7 +42,7 @@ class TokenService {
 	}
 
 	async saveToken(props: SaveToken): Promise<void> {
-		const { userId, refreshToken, oldToken, ip, platform, browser, browserVersion } = props;
+		const { refreshToken, oldToken, ip, platform, browser, browserVersion } = props;
 
 		const token = await this.findToken(oldToken);
 		const updateValues: { refreshToken: string; browserVersion?: string; ip?: string } = { refreshToken };
@@ -74,7 +74,6 @@ class TokenService {
 	validateAccessToken(accessToken: string) {
 		try {
 			const userData = jwt.verify(accessToken, process.env.JWT_ACCESS_KEY as string) as UserDecoded;
-			console.log(userData);
 			return userData;
 		} catch (e) {
 			return null;
@@ -84,7 +83,6 @@ class TokenService {
 	validateRefreshToken(refreshToken: string) {
 		try {
 			const userData = jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY as string) as UserDecoded;
-			console.log(userData);
 			return userData;
 		} catch (e) {
 			return null;
@@ -94,7 +92,7 @@ class TokenService {
 	async createNewToken(props: TokenCreationAttributes & UseragentData): Promise<void> {
 		const { userId, refreshToken, ip, platform, browser, browserVersion } = props;
 
-		const token = await Token.create({
+		await Token.create({
 			userId,
 			refreshToken,
 			ip,

@@ -6,6 +6,8 @@ import fileService from "./fileService";
 import UserDto from "@dto/UserDto";
 import { Model } from "sequelize";
 import { UseragentData } from "@middlewares/userAgentMiddleware";
+import { Client } from "minio";
+import process from "process";
 
 export interface UserWithTokens {
 	user: UserDto;
@@ -16,6 +18,7 @@ export type UserModel = Model<UserAttributes, UserCreationAttributes>;
 
 interface UserAttributesAndUseragent extends UserCreationAttributes {
 	useragentData: UseragentData;
+	minioClient?: Client;
 }
 
 interface RefreshTokenAndUseragent {
@@ -32,7 +35,7 @@ class UserService {
 		} else if (email) {
 			criteria.email = email;
 		} else {
-			throw new Error("Некорректный Email");
+			throw new Error("Ошибка получения пользователя");
 		}
 
 		const user = await User.findOne({ where: criteria });
@@ -43,11 +46,16 @@ class UserService {
 		return user;
 	}
 
-	async registration({ email, password, useragentData }: UserAttributesAndUseragent): Promise<UserWithTokens> {
+	async registration({
+		email,
+		password,
+		useragentData,
+		minioClient
+	}: UserAttributesAndUseragent): Promise<UserWithTokens> {
 		const candidate = await User.findOne({ where: { email } });
-		if (candidate) {
-			throw new Error("Пользователь с такой почтой уже существует");
-		}
+
+		if (candidate) throw new Error("Пользователь с такой почтой уже существует");
+		if (!minioClient) throw new Error("Хранилище S3 не подключено");
 
 		const hashPassword = await bcrypt.hash(password, 4);
 		const activationLink = v4();
@@ -61,7 +69,11 @@ class UserService {
 
 		await tokenService.createNewToken({ userId: userDto.id, refreshToken: tokens.refreshToken, ...useragentData });
 
-		await fileService.createDir({ userId: userDto.id, folderName: String(userDto.id) });
+		const bucketName = "bucket-" + userDto.id;
+		await minioClient.makeBucket(bucketName, "us-east-1", (err) => {
+			if (err) return console.log("Error creating bucket:", err);
+			console.log(`Bucket "${bucketName}" created successfully.`);
+		});
 
 		return { tokens, user: userDto };
 	}
@@ -82,22 +94,22 @@ class UserService {
 		return { tokens, user: userDto };
 	}
 
-	async authorization(props: RefreshTokenAndUseragent): Promise<UserWithTokens> {
-		const { id, useragentData, refreshToken: oldToken } = props;
-
-		const user = await this.getUser({ id });
-		const userDto = new UserDto(user.dataValues);
-
-		const tokens = tokenService.generateTokens({ ...userDto });
-		await tokenService.saveToken({
-			userId: userDto.id,
-			refreshToken: tokens.refreshToken,
-			oldToken,
-			...useragentData
-		});
-
-		return { tokens, user: userDto };
-	}
+	// async authorization(props: RefreshTokenAndUseragent): Promise<UserWithTokens> {
+	// 	const { id, useragentData, refreshToken: oldToken } = props;
+	//
+	// 	const user = await this.getUser({ id });
+	// 	const userDto = new UserDto(user.dataValues);
+	//
+	// 	const tokens = tokenService.generateTokens({ ...userDto });
+	// 	await tokenService.saveToken({
+	// 		userId: userDto.id,
+	// 		refreshToken: tokens.refreshToken,
+	// 		oldToken,
+	// 		...useragentData
+	// 	});
+	//
+	// 	return { tokens, user: userDto };
+	// }
 
 	async refresh({ refreshToken: oldToken, useragentData }: RefreshTokenAndUseragent): Promise<UserWithTokens> {
 		const userData = await tokenService.validateRefreshToken(oldToken);

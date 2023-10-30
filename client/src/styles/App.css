@@ -1,0 +1,94 @@
+:root {
+    --main-anim-delay: .2s;
+    --second-anim-delay: .2s;
+    --fast-anim-delay: .1s;
+
+    --input-bg-color: #FFFFFF;
+    --input-text-color: #000000;
+    --wrong-color: #e64646;
+    --aproved-color: #4bb34b;
+    --main-text-color: #C5C5C5;
+    --ui-text-color: #18A0FB;
+    --ui-bg-color: #18A0FB;
+    --main-blur-bg: rgba(0, 0, 0, .2);
+
+    --path-text-color: #E3E3E3;
+    --path-text-size: 18px;
+    --path-border-color: #414141;
+    --path-bg-color: #353535;
+    --path-bg-color-hover: #34373F;
+
+    --fileContainer-bg-color: #353535;
+    --fileContainer-text-color: #E3E3E3;
+    --file-border-color: #414141;
+    --file-bg-color-hover: #34373F;
+    --header-bg-color: #353535;
+    --header-bg-color-hover: #34373F;
+
+    --userMenu-body-bg-color: #313131;
+    --userMenu-header-bg-color: #353535;
+    --userMenu-border-color: #414141;
+    --userMenu-text-color: #E3E3E3;
+
+    --mobile-auth-text-size: 16px;
+    --auth-border-focus-color: rgba(24, 160, 251, .7);
+    --auth-bg-container: #414141;
+    --auth-main-text-color: #E3E3E3;
+    --auth-second-text-color: #C5C5C5;
+
+    --auth-input-text-color: #FFF;
+
+    --query-bg-color: #34373F;
+    --query-text-color: #E3E3E3;
+    --query-text-size: 18px;
+    --query-bg-focus-color: #363b48;
+
+    --drag-drop-border-color: #C5C5C5;
+    --drag-drop-text-color: #E3E3E3;
+
+    --notFound-text-color: #E3E3E3;
+
+    --settingsList-text-color: #E3E3E3;
+    --settingsList-bg-color: #353535;
+    --settingsList-border-color: #555555;
+
+    --infoModal-text-color: #E3E3E3;
+    --infoModal-second-text-color: #B1B1B1;
+    --infoModal-bg-color: #353535;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+body {
+    background-color: #313131;
+}
+.counter {
+    height: 400px;
+    width: 100%;
+}
+
+.btn {
+    height: 50px;
+    width: 100px;
+    margin: 30px;
+}
+
+.testForm {
+    width: 80%;
+    height: 300px;
+}
+.testForm input {
+    height: 50px;
+    width: 120px;
+    margin: 10px;
+
+}
+.testForm button {
+    height: 50px;
+    width: 120px;
+    margin: 10px;
+}
