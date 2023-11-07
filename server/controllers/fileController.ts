@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { File, Folder, User } from "@models/models";
 import UserDto from "@dto/UserDto";
 import { UploadedFile } from "express-fileupload";
-import userController from "@controllers/userController";
 import userService from "@services/userService";
 import fileService from "@services/fileService";
 const path = require("path");

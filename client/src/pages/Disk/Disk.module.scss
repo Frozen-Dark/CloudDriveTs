@@ -1,0 +1,19 @@
+.disk {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.container {
+  margin: auto;
+  width: 70%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  max-height: 1000px;
+  border: 1px solid var(--separator);
+  border-radius: 20px;
+  padding: 20px;
+}

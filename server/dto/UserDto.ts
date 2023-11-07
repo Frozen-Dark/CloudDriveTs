@@ -1,5 +1,4 @@
 import { UserAttributes } from "@models/models";
-import { UserDecoded } from "@services/tokenService";
 
 export default class UserDto {
 	id;

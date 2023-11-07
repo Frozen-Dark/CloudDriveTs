@@ -1,5 +1,5 @@
 import Auth from "./pages/Auth/Auth.tsx";
-import Disk from "./pages/Disk";
+import Disk from "./pages/Disk/Disk.tsx";
 
 export const LOGIN_ROUTE = "/login";
 export const REGISTRATION_ROUTE = "/registration";

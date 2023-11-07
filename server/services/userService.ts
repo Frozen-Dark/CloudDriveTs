@@ -8,6 +8,9 @@ import { Model } from "sequelize";
 import { UseragentData } from "@middlewares/userAgentMiddleware";
 import { Client } from "minio";
 import process from "process";
+import FolderService from "@services/folderService";
+import FileService from "./fileService";
+import FileController from "@controllers/fileController";
 
 export interface UserWithTokens {
 	user: UserDto;
@@ -74,6 +77,8 @@ class UserService {
 			if (err) return console.log("Error creating bucket:", err);
 			console.log(`Bucket "${bucketName}" created successfully.`);
 		});
+
+		await FolderService.createDir({ userId: userDto.id, folderName: "userFolder", parentId: 0, isReg: true });
 
 		return { tokens, user: userDto };
 	}

@@ -1,7 +1,11 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, Navigate } from "react-router-dom";
 import { useState, MouseEvent } from "react";
 import classes from "./Auth.module.scss";
 import { LOGIN_ROUTE, REGISTRATION_ROUTE } from "../../routes";
+import { login, registration } from "../../actions/user.ts";
+import { observer } from "mobx-react";
+import User from "../../store/User.ts";
+
 const Auth = () => {
 	const location = useLocation();
 	const isLoginRoute = location.pathname === LOGIN_ROUTE;
@@ -10,13 +14,17 @@ const Auth = () => {
 
 	async function loginHandler(e: MouseEvent<HTMLButtonElement>) {
 		e.preventDefault();
+		await login({ email, password });
 	}
 	async function registrationHandler(e: MouseEvent<HTMLButtonElement>) {
 		e.preventDefault();
+		await registration({ email, password });
 	}
 
 	return (
 		<form className={classes.container}>
+			{User.isAuth && <Navigate to={"/disk"} />}
+
 			{isLoginRoute ? (
 				<div>
 					<h2 className={classes.form__title}>Вход</h2>
@@ -69,7 +77,7 @@ const Auth = () => {
 
 			<div className={classes.setUser}>
 				<span>{isLoginRoute ? "Нет аккаунта? " : "Есть аккаунт? "}</span>
-				<NavLink onClick={() => console.log("NAV")} to={isLoginRoute ? REGISTRATION_ROUTE : LOGIN_ROUTE}>
+				<NavLink className={classes.link} to={isLoginRoute ? REGISTRATION_ROUTE : LOGIN_ROUTE}>
 					{isLoginRoute ? "Зарегистрируйся!" : "Войдите!"}
 				</NavLink>
 			</div>
@@ -77,4 +85,4 @@ const Auth = () => {
 	);
 };
 
-export default Auth;
+export default observer(Auth);

@@ -1,25 +1,25 @@
-import { Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { authRoutes, publicRoutes } from "./routes";
-import NotFoundPage from "./pages/NotFoundPage";
 import "./styles/App.css";
+import Router from "./components/Router/Router.tsx";
+import MainContainer from "./components/MainConteiner/MainContainer.tsx";
+import WallpaperContainer from "./components/WallpaperContainer/WallpaperContainer.tsx";
+import { useEffect, useRef } from "react";
+import { refresh } from "./actions/user.ts";
 function App() {
-	const [userAuth, dispatch] = useState(false);
+	const state = useRef({ value: true });
 
 	useEffect(() => {
-		dispatch(true);
+		if (state.current.value) {
+			state.current.value = false;
+			refresh();
+		}
 	}, []);
 
 	return (
-		<Routes>
-			{userAuth &&
-				authRoutes.map(({ path, Component }) => <Route key={path} path={path} element={<Component />} />)}
-
-			{publicRoutes.map(({ path, Component }) => (
-				<Route key={path} path={path} element={<Component />} />
-			))}
-			<Route path="*" element={<NotFoundPage />} />
-		</Routes>
+		<MainContainer>
+			<WallpaperContainer>
+				<Router />
+			</WallpaperContainer>
+		</MainContainer>
 	);
 }
 
