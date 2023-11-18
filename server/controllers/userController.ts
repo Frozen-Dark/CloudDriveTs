@@ -1,7 +1,7 @@
 import userService from "@services/userService";
 import { Request, Response } from "express";
 import { UserCreationAttributes } from "@models/models";
-import tokenService, { UserDecoded } from "@services/tokenService";
+import tokenService from "@services/tokenService";
 
 class UserController {
 	async registration(req: Request, res: Response) {

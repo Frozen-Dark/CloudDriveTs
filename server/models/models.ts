@@ -22,9 +22,10 @@ interface FolderAttributes {
 	id: number;
 	userId: number;
 	folderName: string;
-	parentId?: number;
+	parentId?: number | null;
 	hasLink?: boolean;
-	children?: Array<number>;
+	foldersId?: Array<number>;
+	filesId?: Array<number>;
 }
 
 interface FolderCreationAttributes extends Optional<FolderAttributes, "id"> {
@@ -110,7 +111,8 @@ const Folder: ModelStatic<Model<FolderAttributes, FolderCreationAttributes>> = s
 		folderName: { type: DataTypes.STRING, allowNull: false },
 		parentId: { type: DataTypes.INTEGER },
 		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false },
-		children: { type: DataTypes.ARRAY(DataTypes.INTEGER) }
+		foldersId: { type: DataTypes.ARRAY(DataTypes.INTEGER) },
+		filesId: { type: DataTypes.ARRAY(DataTypes.INTEGER) }
 	},
 	{
 		indexes: [
@@ -120,18 +122,20 @@ const Folder: ModelStatic<Model<FolderAttributes, FolderCreationAttributes>> = s
 			},
 			{
 				name: "IDX_FOLDERNAME_PARENTID",
-				fields: ["folderName", "parentId"], // не допустит две одинаковых папки с одинаковым именем
-				unique: true
+				fields: ["folderName", "parentId"],
+				unique: true // не допустит две папки с одинаковым именем
 			}
 		],
 		hooks: {
 			beforeUpdate: async (folder) => {
 				// Проверка на наличие папки с таким же именем в родительской папке
+				const { folderName, parentId, id } = folder.dataValues;
+
 				const duplicateFolder = await Folder.findOne({
 					where: {
-						folderName: folder.dataValues.folderName,
-						parentId: folder.dataValues.parentId,
-						id: { [Op.ne]: folder.dataValues.id } // Исключение текущей папки из поиска
+						folderName: folderName,
+						parentId: parentId,
+						id: { [Op.ne]: id } // Исключение id текущей папки из поиска
 					}
 				});
 				if (duplicateFolder) {
@@ -161,12 +165,12 @@ const File: ModelStatic<Model<FileAttributes, FileCreationAttributes>> = sequeli
 			},
 			{
 				name: "IDX_FILENAME_PARENTID_EXTENSION",
-				fields: ["fileName", "parentId", "extension"], // не допустит два одинаковых файла с одинаковым именем и расширением в одной папке
-				unique: true
+				fields: ["fileName", "parentId", "extension"],
+				unique: true // не допустит два одинаковых файла с одинаковым именем и расширением в одной папке
 			}
 		],
 		hooks: {
-			beforeUpdate: async (file, options) => {
+			beforeUpdate: async (file) => {
 				// Проверка на наличие файла с таким же именем и расширением в папке
 				const duplicateFile = await File.findOne({
 					where: {
@@ -295,7 +299,7 @@ User.hasMany(Folder, { foreignKey: "userId", onDelete: "CASCADE" });
 Folder.belongsTo(User, { foreignKey: "userId" });
 
 // Связь папка / Файл
-Folder.hasMany(File, { foreignKey: "parentId", onDelete: "CASCADE" });
+Folder.hasMany(File, { foreignKey: "parentId" });
 File.belongsTo(Folder, { foreignKey: "parentId" });
 
 // Связь папка / папка (родительская и дочерние)

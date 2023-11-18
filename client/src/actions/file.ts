@@ -36,8 +36,9 @@ export const getFiles = async (parentId: number): Promise<void> => {
 export const uploadFile = async (file: File, parentId: number): Promise<void> => {
 	try {
 		const formData = new FormData();
-		formData.append("file", file);
+		formData.append("file", file, encodeURIComponent(file.name));
 		formData.append("parentId", String(parentId));
+		console.log(file);
 		const response = await axios.post(`${API_URL}/api/file/uploadFile`, formData, {
 			onUploadProgress: (progressEvent) => {
 				console.log(parentId, progressEvent);

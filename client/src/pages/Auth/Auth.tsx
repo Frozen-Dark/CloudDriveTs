@@ -7,8 +7,8 @@ import { observer } from "mobx-react";
 import User from "../../store/User.ts";
 
 const Auth = () => {
-	const location = useLocation();
-	const isLoginRoute = location.pathname === LOGIN_ROUTE;
+	const { pathname } = useLocation();
+	const isLoginRoute = pathname === LOGIN_ROUTE;
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 
@@ -16,9 +16,15 @@ const Auth = () => {
 		e.preventDefault();
 		await login({ email, password });
 	}
+
 	async function registrationHandler(e: MouseEvent<HTMLButtonElement>) {
 		e.preventDefault();
 		await registration({ email, password });
+	}
+
+	function changeRouteHandler() {
+		setEmail("");
+		setPassword("");
 	}
 
 	return (
@@ -77,7 +83,11 @@ const Auth = () => {
 
 			<div className={classes.setUser}>
 				<span>{isLoginRoute ? "Нет аккаунта? " : "Есть аккаунт? "}</span>
-				<NavLink className={classes.link} to={isLoginRoute ? REGISTRATION_ROUTE : LOGIN_ROUTE}>
+				<NavLink
+					onClick={changeRouteHandler}
+					className={classes.link}
+					to={isLoginRoute ? REGISTRATION_ROUTE : LOGIN_ROUTE}
+				>
 					{isLoginRoute ? "Зарегистрируйся!" : "Войдите!"}
 				</NavLink>
 			</div>

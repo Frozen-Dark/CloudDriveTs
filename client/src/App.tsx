@@ -4,6 +4,7 @@ import MainContainer from "./components/MainConteiner/MainContainer.tsx";
 import WallpaperContainer from "./components/WallpaperContainer/WallpaperContainer.tsx";
 import { useEffect, useRef } from "react";
 import { refresh } from "./actions/user.ts";
+import Header from "./components/Header/Header.tsx";
 function App() {
 	const state = useRef({ value: true });
 
@@ -17,6 +18,7 @@ function App() {
 	return (
 		<MainContainer>
 			<WallpaperContainer>
+				<Header />
 				<Router />
 			</WallpaperContainer>
 		</MainContainer>

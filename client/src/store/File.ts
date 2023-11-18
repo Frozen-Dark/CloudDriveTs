@@ -7,6 +7,8 @@ export interface FileAttributes {
 	size: number;
 	extension: string;
 	parentId: number;
+	createdAt: string;
+	updatedAt: string;
 	hasLink?: boolean;
 }
 
@@ -20,8 +22,8 @@ class File {
 		this._files = files;
 	}
 
-	get files(): FileAttributes[] | [] | undefined {
-		return this._files;
+	get files(): FileAttributes[] | [] {
+		return this._files || [];
 	}
 }
 

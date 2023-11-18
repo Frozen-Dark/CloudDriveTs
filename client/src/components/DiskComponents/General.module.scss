@@ -1,0 +1,61 @@
+.item {
+	height: 60px;
+	width: 100%;
+
+	display: grid;
+	grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
+	align-items: center;
+
+	gap: 16px;
+	padding: 8px;
+
+	border-bottom: 1px solid var(--separator);
+}
+
+.item:hover {
+	background-color: var(--color_background_content);
+  
+	.menu img {
+		opacity: 1;
+	}
+}
+
+.icon {
+	height: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	cursor: pointer;
+}
+
+.icon img {
+	height: 80%;
+}
+
+.name,
+.type,
+.size,
+.modified__date {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.menu {
+	height: 100%;
+	width: 20px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	cursor: pointer;
+}
+
+.menu img {
+	height: 60%;
+	opacity: 0;
+	transition: 50ms;
+}

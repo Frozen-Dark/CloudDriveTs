@@ -2,15 +2,12 @@ import { User, UserAttributes, UserCreationAttributes } from "@models/models";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
 import tokenService, { Tokens } from "./tokenService";
-import fileService from "./fileService";
 import UserDto from "@dto/UserDto";
 import { Model } from "sequelize";
 import { UseragentData } from "@middlewares/userAgentMiddleware";
 import { Client } from "minio";
-import process from "process";
 import FolderService from "@services/folderService";
-import FileService from "./fileService";
-import FileController from "@controllers/fileController";
+import MinoService from "@services/minoService";
 
 export interface UserWithTokens {
 	user: UserDto;
@@ -30,8 +27,8 @@ interface RefreshTokenAndUseragent {
 	id?: string | number;
 }
 class UserService {
-	async getUser({ id, email }: { id?: string | number; email?: string }): Promise<UserModel> {
-		const criteria: { id?: string | number; email?: string } = {};
+	async getUser({ id, email }: { id?: number; email?: string }): Promise<UserModel> {
+		const criteria: { id?: number; email?: string } = {};
 
 		if (id) {
 			criteria.id = id;
@@ -71,14 +68,8 @@ class UserService {
 		const tokens = tokenService.generateTokens({ ...userDto });
 
 		await tokenService.createNewToken({ userId: userDto.id, refreshToken: tokens.refreshToken, ...useragentData });
-
-		const bucketName = "bucket-" + userDto.id;
-		await minioClient.makeBucket(bucketName, "us-east-1", (err) => {
-			if (err) return console.log("Error creating bucket:", err);
-			console.log(`Bucket "${bucketName}" created successfully.`);
-		});
-
-		await FolderService.createDir({ userId: userDto.id, folderName: "userFolder", parentId: 0, isReg: true });
+		await FolderService.createDir({ userId: userDto.id, folderName: "userFolder", parentId: null, isReg: true });
+		await MinoService.createBucket({ userId: userDto.id, mino: minioClient });
 
 		return { tokens, user: userDto };
 	}
@@ -87,9 +78,7 @@ class UserService {
 		const user = await this.getUser({ email });
 
 		const isPassEquals = await bcrypt.compare(password, user.dataValues.password);
-		if (!isPassEquals) {
-			throw new Error("Некорректный пароль");
-		}
+		if (!isPassEquals) throw new Error("Некорректный пароль");
 
 		const userDto = new UserDto(user.dataValues);
 
@@ -99,30 +88,13 @@ class UserService {
 		return { tokens, user: userDto };
 	}
 
-	// async authorization(props: RefreshTokenAndUseragent): Promise<UserWithTokens> {
-	// 	const { id, useragentData, refreshToken: oldToken } = props;
-	//
-	// 	const user = await this.getUser({ id });
-	// 	const userDto = new UserDto(user.dataValues);
-	//
-	// 	const tokens = tokenService.generateTokens({ ...userDto });
-	// 	await tokenService.saveToken({
-	// 		userId: userDto.id,
-	// 		refreshToken: tokens.refreshToken,
-	// 		oldToken,
-	// 		...useragentData
-	// 	});
-	//
-	// 	return { tokens, user: userDto };
-	// }
-
 	async refresh({ refreshToken: oldToken, useragentData }: RefreshTokenAndUseragent): Promise<UserWithTokens> {
 		const userData = await tokenService.validateRefreshToken(oldToken);
 		if (!userData) {
 			throw new Error("Не авторизован");
 		}
 
-		const user = (await this.getUser({ id: userData.id })) as UserModel;
+		const user = await this.getUser({ id: userData.id });
 		const userDto = new UserDto(user.dataValues);
 
 		const tokens = tokenService.generateTokens({ ...userDto });
@@ -135,6 +107,15 @@ class UserService {
 		});
 
 		return { tokens, user: userDto };
+	}
+
+	async clearSpace({ userId, fileSize }: { userId: number; fileSize: number }): Promise<void> {
+		const user = await this.getUser({ id: userId });
+		const { userStorage } = user.dataValues;
+		if (userStorage) {
+			const newSpace = Math.max(userStorage - fileSize, 0);
+			await user.update({ userStorage: newSpace });
+		}
 	}
 }
 

@@ -1,26 +1,9 @@
 import { Request, Response } from "express";
-import { File, Folder, User } from "@models/models";
-import UserDto from "@dto/UserDto";
 import { UploadedFile } from "express-fileupload";
-import userService from "@services/userService";
-import fileService from "@services/fileService";
-const path = require("path");
+import FileService from "@services/fileService";
+import FolderService from "@services/folderService";
 
 class FileController {
-	async getFiles(req: Request, res: Response) {
-		try {
-			const user = req.user;
-
-			const folders = await Folder.findAll({ where: { userId: user.id } });
-			const files = await File.findAll({ where: { userId: user.id } });
-
-			return res.json({ folders, files });
-		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "getFiles error" });
-		}
-	}
-
 	async move(req: Request, res: Response) {
 		try {
 			const { fileId, parentId } = req.body;
@@ -30,28 +13,7 @@ class FileController {
 				return res.status(400).json({ message: "Необходимые параметры отсутствуют" });
 			}
 
-			const file = await File.findOne({ where: { id: fileId, userId: user.id } });
-			if (!file) {
-				return res.status(400).json({ message: "Файл не найден" });
-			}
-
-			const oldParentId = file.dataValues.parentId;
-
-			await file.update({ parentId: parentId });
-
-			const oldParentFolder = await Folder.findOne({ where: { id: oldParentId, userId: user.id } });
-			if (!oldParentFolder) throw new Error("Родительская папка не найдена");
-
-			const updatedChildrenOldParent = oldParentFolder.dataValues.children?.filter(
-				(childId) => childId !== fileId
-			);
-			await oldParentFolder.update({ children: updatedChildrenOldParent });
-
-			const newParentFolder = await Folder.findOne({ where: { id: parentId, userId: user.id } });
-			if (!newParentFolder) throw new Error("Родительская папка не найдена");
-
-			const updatedChildrenNewParent = [...(newParentFolder.dataValues.children || []), fileId];
-			await newParentFolder.update({ children: updatedChildrenNewParent });
+			await FileService.move({ userId: user.id, parentId, fileId });
 
 			return res.json({ message: "Файл успешно перемещен" });
 		} catch (e) {
@@ -64,12 +26,9 @@ class FileController {
 		try {
 			const user = req.user;
 			const parentId = req.body.parentId;
-			if (!parentId || !user) {
-				throw new Error("Непредвиденная ошибка");
-			}
 
-			const folders = await Folder.findAll({ where: { userId: user.id, parentId } });
-			const files = await File.findAll({ where: { userId: user.id, parentId } });
+			const folders = await FolderService.getFoldersByParentId({ userId: user.id, parentId });
+			const files = await FileService.getFilesByParentId({ userId: user.id, parentId });
 
 			return res.json({ folders, files });
 		} catch (e) {
@@ -78,51 +37,16 @@ class FileController {
 		}
 	}
 
-	async testFile(req: Request, res: Response) {
-		try {
-			const parentId = req.body.parentId;
-			if (!req.files?.file) {
-				return res.status(400).json({ message: "Файл не был загружен" });
-			}
-			const file = req.files.file as UploadedFile;
-			const { data, name: fileName, size, mimetype } = file;
-			const extension = path.extname(fileName);
-
-			const user = await User.findOne({ where: { id: req.user.id } });
-			if (!user || !fileName || !parentId) {
-				return res.status(400).json({ message: "Ошибка при загрузке файла" });
-			}
-			const userDto = new UserDto(user.dataValues);
-
-			const parentFolder = await Folder.findOne({ where: { userId: userDto.id, id: parentId } });
-			if (!parentFolder) {
-				return res.status(400).json({ message: "Родительская папка не найдена" });
-			}
-
-			const fileData = { userId: userDto.id, fileName, parentId: Number(parentId), size, extension };
-
-			return res.json({ file: fileData, mimetype });
-		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "uploadFile error" });
-		}
-	}
-
 	async rename(req: Request, res: Response) {
 		try {
 			const { fileId, fileName } = req.body;
+			const userId = req.user.id;
+
 			if (!fileId || !fileName) {
 				return res.status(400).json({ message: "id или имя файла не найдены" });
 			}
 
-			const user = await User.findOne({ where: { id: req.user.id } });
-			const file = await File.findOne({ where: { userId: req.user.id, id: fileId } });
-			if (!file || !user) {
-				return res.status(400).json({ message: "Файл или пользователь не найден" });
-			}
-
-			const updateValues: { fileName: string } = { fileName };
-			await file.update(updateValues);
+			const file = await FileService.rename({ fileId, fileName, userId });
 
 			return res.json({ file });
 		} catch (e) {
@@ -138,16 +62,9 @@ class FileController {
 				return res.status(400).json({ message: "Имя файла не указано" });
 			}
 
-			const { id: userId } = (await userService.getUser({ id: req.user.id })).dataValues;
-			const file = await fileService.getById(fileId, userId);
+			await FileService.delete({ userId: req.user.id, fileId, mino: req.minioClient });
 
-			const mino = req.minioClient;
-			const bucketName = "bucket-" + userId;
-			const filePath = String(file.dataValues.id);
-
-			await Promise.all([await mino.removeObject(bucketName, filePath), await file.destroy()]);
-
-			return res.json({ message: "Файл был удален", fileId: filePath, bucketName });
+			return res.json({ message: "Файл был удален" });
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ message: "deleteFile error" });
@@ -160,47 +77,11 @@ class FileController {
 			if (!req.files?.file) {
 				return res.status(400).json({ message: "Файл не был загружен" });
 			}
-			const file = req.files.file;
-			const { data, name: fileName, size } = file as UploadedFile;
-			const extension = path.extname(fileName);
+			const uploadFile = req.files.file as UploadedFile;
 
-			const user = await userService.getUser({ id: req.user.id });
-			if (!fileName) {
-				return res.status(400).json({ message: "Ошибка при загрузке файла" });
-			}
-			const userDto = new UserDto(user.dataValues);
+			const file = await FileService.upload({ uploadFile, mino: req.minioClient, userId: req.user.id, parentId });
 
-			const mino = req.minioClient;
-
-			const parentFolder = await Folder.findOne({ where: { userId: userDto.id, id: parentId } });
-			if (!parentFolder) {
-				return res.status(400).json({ message: "Родительская папка не найдена" });
-			}
-
-			const fileModel = await File.create({
-				userId: userDto.id,
-				fileName,
-				parentId: Number(parentId),
-				size,
-				extension
-			});
-
-			const bucketName = "bucket-" + userDto.id;
-
-			const filePath = String(fileModel.dataValues.id);
-			const status = await mino.putObject(bucketName, filePath, data);
-
-			if (status.etag) {
-				const { children } = parentFolder.dataValues;
-				const childrenWithNewFolder = children
-					? [...children, fileModel.dataValues.id]
-					: [fileModel.dataValues.id];
-
-				const updateValues: { children: number[] } = { children: childrenWithNewFolder };
-				await parentFolder.update(updateValues);
-			}
-
-			return res.json({ etag: status.etag, versionId: status.versionId, file: fileModel });
+			return res.json({ file });
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ message: "uploadFile error" });
