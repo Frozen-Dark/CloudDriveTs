@@ -1,0 +1,33 @@
+.CreateFolder {
+	position: relative;
+	height: 215px;
+	width: 350px;
+}
+
+.titleWrapper {
+	height: 65px;
+	padding: 20px 18px;
+
+	width: 100%;
+	display: flex;
+	justify-content: start;
+	align-items: start;
+
+	border-bottom: 1px solid var(--separator);
+}
+
+.buttonContainer {
+	display: flex;
+	gap: 15px;
+	position: absolute;
+	top: calc(100% - 45px);
+	right: 20px;
+}
+
+.createButton {
+	height: 40px;
+}
+
+.input {
+	width: calc(100% - 40px);
+}

@@ -1,26 +1,27 @@
 import classes from "./General.module.scss";
-import { FileAttributes } from "../../store/File.ts";
-import fileIcon from "../../assets/svg/file.svg";
-import menuIcon from "../../assets/svg/dots.svg";
+import { FileAttributes } from "@store/File";
+import MenuIcon from "@assets/icons/dots.svg";
+import FileSvg from "@assets/FileSvg";
 const File = ({ file }: { file: FileAttributes }) => {
 	const { fileName, extension, size, updatedAt } = file;
 	const filterExtension = extension.replace(".", "");
 
 	const modifiedDate = updatedAt.split("T")[0];
-	const parsedSize = String(Math.floor(size / 1024)) + " КБ";
+	const kiloByte = Math.floor(size / 1024);
+	const parsedSize = kiloByte > 1023 ? String((kiloByte / 1024).toFixed(2)) + " Мб" : String(kiloByte) + " Кб";
 	function menuClickHandler() {}
 
 	return (
 		<div className={classes.item}>
 			<div className={classes.icon}>
-				<img src={fileIcon} alt="Файл" />
+				<FileSvg extension={extension} />
 			</div>
 			<div className={classes.name}>{fileName}</div>
 			<div className={classes.type}>{filterExtension}</div>
 			<div className={classes.size}>{parsedSize}</div>
 			<div className={classes.modified__date}>{modifiedDate}</div>
 			<div onClick={menuClickHandler} className={classes.menu}>
-				<img src={menuIcon} alt="Меню" />
+				<MenuIcon />
 			</div>
 		</div>
 	);

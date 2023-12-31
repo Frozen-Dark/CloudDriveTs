@@ -1,26 +1,36 @@
-import { NavLink, useLocation, Navigate } from "react-router-dom";
-import { useState, MouseEvent } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { MouseEvent, useEffect, useState } from "react";
 import classes from "./Auth.module.scss";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE } from "../../routes";
-import { login, registration } from "../../actions/user.ts";
 import { observer } from "mobx-react";
-import User from "../../store/User.ts";
+import User from "@store/User";
+import { AppRoutes, RoutePath } from "@config/routeConfig/routeConfig";
+import { login, registration } from "@actions/user";
+import Button, { ButtonTheme } from "@ui/Button/Button";
 
 const Auth = () => {
+	const navigate = useNavigate();
 	const { pathname } = useLocation();
-	const isLoginRoute = pathname === LOGIN_ROUTE;
+	const isLoginRoute = pathname === RoutePath[AppRoutes.LOGIN];
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 
-	async function loginHandler(e: MouseEvent<HTMLButtonElement>) {
+	const loginHandler = async (e: MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		await login({ email, password });
-	}
+		setPassword("");
+	};
 
-	async function registrationHandler(e: MouseEvent<HTMLButtonElement>) {
+	const registrationHandler = async (e: MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		await registration({ email, password });
-	}
+		setPassword("");
+	};
+
+	useEffect(() => {
+		if (User.isAuth) {
+			navigate("/disk");
+		}
+	}, [User.isAuth]);
 
 	function changeRouteHandler() {
 		setEmail("");
@@ -29,8 +39,6 @@ const Auth = () => {
 
 	return (
 		<form className={classes.container}>
-			{User.isAuth && <Navigate to={"/disk"} />}
-
 			{isLoginRoute ? (
 				<div>
 					<h2 className={classes.form__title}>Вход</h2>
@@ -51,9 +59,13 @@ const Auth = () => {
 						type={"password"}
 					/>
 
-					<button className={classes.myButton} onClick={(e) => loginHandler(e)}>
+					<Button
+						theme={ButtonTheme.BACKGROUND_AZURE}
+						className={classes.myButton}
+						onClick={(e) => loginHandler(e)}
+					>
 						Войти
-					</button>
+					</Button>
 				</div>
 			) : (
 				<div className="form">
@@ -75,9 +87,13 @@ const Auth = () => {
 						type={"password"}
 					/>
 
-					<button className={classes.myButton} onClick={(e) => registrationHandler(e)}>
+					<Button
+						theme={ButtonTheme.BACKGROUND_AZURE}
+						className={classes.myButton}
+						onClick={(e) => registrationHandler(e)}
+					>
 						Зарегистрироваться
-					</button>
+					</Button>
 				</div>
 			)}
 
@@ -86,7 +102,7 @@ const Auth = () => {
 				<NavLink
 					onClick={changeRouteHandler}
 					className={classes.link}
-					to={isLoginRoute ? REGISTRATION_ROUTE : LOGIN_ROUTE}
+					to={RoutePath[isLoginRoute ? AppRoutes.REGISTRATION : AppRoutes.LOGIN]}
 				>
 					{isLoginRoute ? "Зарегистрируйся!" : "Войдите!"}
 				</NavLink>

@@ -1,6 +1,7 @@
 import { Client } from "minio";
 import { DirType } from "@services/folderService";
 import { Buffer } from "buffer";
+import ApiError from "@error/ApiError";
 
 class MinoService {
 	getNameAndPath({ userId, fileId }: { userId: number; fileId: number }) {
@@ -13,9 +14,7 @@ class MinoService {
 	async createBucket({ userId, mino }: { userId: number; mino: Client }) {
 		const { bucketName } = this.getNameAndPath({ userId, fileId: 0 });
 
-		return mino.makeBucket(bucketName, "us-east-1", (err) => {
-			if (err) throw new Error(`Ошибка при создании корзины: ${err}`);
-		});
+		return mino.makeBucket(bucketName, "us-east-1", (err) => {});
 	}
 
 	async uploadFile(props: { parentFolder: DirType; mino: Client; data: Buffer; fileId: number; userId: number }) {

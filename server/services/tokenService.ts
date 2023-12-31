@@ -5,6 +5,7 @@ import { Token, TokenAttributes, TokenCreationAttributes } from "@models/models"
 import UserDto from "@dto/UserDto";
 import { Model, Op } from "sequelize";
 import { UseragentData } from "@middlewares/userAgentMiddleware";
+import ApiError from "@error/ApiError";
 
 dotenv.config();
 
@@ -48,7 +49,7 @@ class TokenService {
 		const updateValues: { refreshToken: string; browserVersion?: string; ip?: string } = { refreshToken };
 
 		if (token.dataValues.platform !== platform || token.dataValues.browser !== browser) {
-			throw new Error("Непредвиденная ошибка");
+			throw ApiError.forbidden("Браузер или устройство не указан");
 		}
 
 		if (token.dataValues.browserVersion !== browserVersion || token.dataValues.ip !== ip) {
@@ -62,7 +63,7 @@ class TokenService {
 	async findToken(refreshToken: string): Promise<TokenModelType> {
 		const token = await Token.findOne({ where: { refreshToken } });
 		if (!token) {
-			throw new Error("Токен не найден или уже использован");
+			throw ApiError.badRequest("Токен не найден или уже использован");
 		}
 		return token;
 	}
@@ -71,22 +72,27 @@ class TokenService {
 		return await Token.findAll({ where: { userId } });
 	}
 
+	async destroyToken(refreshToken: string): Promise<void> {
+		const token = await this.findToken(refreshToken);
+		await token.destroy();
+	}
+
 	validateAccessToken(accessToken: string) {
-		try {
-			const userData = jwt.verify(accessToken, process.env.JWT_ACCESS_KEY as string) as UserDecoded;
-			return userData;
-		} catch (e) {
+		const userData = jwt.verify(accessToken, process.env.JWT_ACCESS_KEY as string);
+		if (!userData) {
 			return null;
 		}
+
+		return userData as UserDecoded;
 	}
 
 	validateRefreshToken(refreshToken: string) {
-		try {
-			const userData = jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY as string) as UserDecoded;
-			return userData;
-		} catch (e) {
+		const userData = jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY as string);
+		if (!userData) {
 			return null;
 		}
+
+		return userData as UserDecoded;
 	}
 
 	async createNewToken(props: TokenCreationAttributes & UseragentData): Promise<void> {

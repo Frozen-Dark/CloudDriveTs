@@ -1,6 +1,6 @@
 import { Folder, FolderAttributes, FolderCreationAttributes } from "@models/models";
 import { Model } from "sequelize";
-import userService from "@services/userService";
+import ApiError from "@error/ApiError";
 
 export type DirType = Model<FolderAttributes, FolderCreationAttributes>;
 
@@ -8,41 +8,61 @@ type CreateDir = { userId: number; folderName: string; parentId: number | null; 
 
 class FolderService {
 	async getById({ userId, id }: { userId: number; id: number | null }) {
+		if (id === null) {
+			return this.getRootFolder({ userId });
+		}
+
 		if (!userId || !id) {
-			throw new Error("Некорректные данные для получения папки");
+			throw ApiError.notFound("Некорректные данные для получения папки");
 		}
 
 		const folder = await Folder.findOne({ where: { userId, id } });
 		if (!folder) {
-			throw new Error("Папка не найдена");
+			throw ApiError.notFound("Папка не найдена");
 		}
 
 		return folder;
 	}
-	async getFoldersByParentId({ userId, parentId }: { userId: number; parentId: number }) {
+
+	async getRootFolder({ userId }: { userId: number }) {
+		if (!userId) {
+			throw ApiError.notFound("Некорректные данные для получения папки");
+		}
+
+		const folder = await Folder.findOne({ where: { userId, parentId: null } });
+		if (!folder) {
+			throw ApiError.notFound("Папка не найдена");
+		}
+
+		return folder;
+	}
+
+	async getFoldersByParentId({ userId, parentId }: { userId: number; parentId: number | null }) {
 		if (!userId || !parentId) {
-			throw new Error("Некорректные данные для получения папок");
+			throw ApiError.notFound("Некорректные данные для получения папок");
 		}
 
 		const folders = await Folder.findAll({ where: { userId, parentId } });
 		if (!folders) {
-			throw new Error("Папки не найдены");
+			throw ApiError.notFound("Папки не найдены");
 		}
 
 		return folders;
 	}
 	async createDir(props: CreateDir) {
-		const { userId, folderName, parentId, isReg = false } = props;
+		const { userId, folderName, parentId } = props;
 
 		const folder = await Folder.create({ userId, folderName, parentId });
-		if (isReg) {
+
+		if (parentId === null) {
 			return folder;
 		}
 
 		const parentFolder = await this.getById({ userId, id: parentId });
+
 		if (!parentFolder) {
 			await folder.destroy();
-			throw new Error("Родительская папка не найдена");
+			throw ApiError.notFound("Родительская папка не найдена");
 		}
 		await this._saveNewFoldersId(folder.dataValues.id, parentFolder);
 
@@ -69,7 +89,9 @@ class FolderService {
 		const folder = await this.getById({ id: folderId, userId });
 		const { filesId, foldersId } = folder.dataValues;
 
-		if (filesId || foldersId) throw new Error("Папка не пуста");
+		if (filesId || foldersId) {
+			throw ApiError.badRequest("Родительская Папка не пуста");
+		}
 
 		await folder.destroy();
 	}

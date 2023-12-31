@@ -1,10 +1,12 @@
 import userService from "@services/userService";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UserCreationAttributes } from "@models/models";
 import tokenService from "@services/tokenService";
+import ApiError from "@error/ApiError";
+import UserService from "@services/userService";
 
 class UserController {
-	async registration(req: Request, res: Response) {
+	async registration(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { email, password }: UserCreationAttributes = req.body;
 			const useragentData = req.useragentData;
@@ -15,6 +17,7 @@ class UserController {
 				useragentData,
 				minioClient: req.minioClient
 			});
+
 			res.cookie("refreshToken", userData.tokens.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
 				httpOnly: true
@@ -22,12 +25,11 @@ class UserController {
 
 			return res.json(userData);
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "registration error" });
+			next(e);
 		}
 	}
 
-	async login(req: Request, res: Response) {
+	async login(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { email, password }: UserCreationAttributes = req.body;
 			const useragentData = req.useragentData;
@@ -40,45 +42,21 @@ class UserController {
 			});
 
 			res.json(userData);
+
 			await tokenService.clearOldTokens({ userId: userData.user.id, useragentData });
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "login error" });
+			next(e);
 		}
 	}
 
-	async authorization(req: Request, res: Response) {
-		try {
-			const authorizationHeader = req.headers.authorization;
-			const useragentData = req.useragentData;
-			const { refreshToken } = req.cookies;
-
-			const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
-
-			if (!accessToken || !refreshToken) {
-				return res.status(401).json({ message: "Не авторизован" });
-			}
-
-			const userData = await userService.refresh({ useragentData, refreshToken });
-
-			res.cookie("refreshToken", userData.tokens.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000,
-				httpOnly: true
-			});
-
-			return res.json(userData);
-		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "refresh error" });
-		}
-	}
-
-	async refresh(req: Request, res: Response) {
+	async refresh(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { refreshToken } = req.cookies;
+
 			if (!refreshToken) {
-				return res.status(400).json({ message: "refresh out" });
+				return next(ApiError.badRequest("Токен не указан"));
 			}
+
 			const useragentData = req.useragentData;
 			const userData = await userService.refresh({ refreshToken, useragentData });
 			res.cookie("refreshToken", userData.tokens.refreshToken, {
@@ -88,22 +66,22 @@ class UserController {
 
 			return res.json(userData);
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "refresh error" });
+			next(e);
 		}
 	}
 
-	async logout(req: Request, res: Response) {
+	async logout(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { refreshToken } = req.cookies;
 			if (!refreshToken) {
-				return res.status(500).json({ message: "Непредвиденная ошибка" });
+				next(ApiError.badRequest("Токен не найден"));
 			}
-			res.clearCookie("refreshToken");
-			//  <-- this work
+
+			await UserService.logout({ refreshToken });
+
+			res.clearCookie("refreshToken").json({ message: "Выход был выполнен" });
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "refresh error" });
+			next(e);
 		}
 	}
 }

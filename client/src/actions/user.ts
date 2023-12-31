@@ -1,5 +1,7 @@
 import axios from "axios";
-import User, { UserAttributes } from "../store/User";
+import User, { UserAttributes } from "@store/User";
+import File from "@store/File";
+import Folder from "@store/Folder";
 
 const API_URL = "http://localhost:5000";
 axios.defaults.withCredentials = true;
@@ -51,7 +53,7 @@ export const login = async ({ email, password }: { email: string; password: stri
 		if (response.status === 200) {
 			const { user, tokens } = response.data;
 
-			User.isAuth = true;
+			User.setIsAuth(true);
 			User.userData = user;
 			User.token = tokens.accessToken;
 		}
@@ -67,11 +69,10 @@ export const registration = async ({ email, password }: { email: string; passwor
 			password
 		});
 
-		console.log(response);
 		if (response.status === 200) {
 			const { user, tokens } = response.data;
 
-			User.isAuth = true;
+			User.setIsAuth(true);
 			User.userData = user;
 			User.token = tokens.accessToken;
 		}
@@ -89,7 +90,24 @@ export const refresh = async (): Promise<void> => {
 
 			User.token = tokens.accessToken;
 			User.userData = user;
-			User.isAuth = true;
+			User.setIsAuth(true);
 		}
-	} catch (e) {}
+	} catch (e) {
+		console.log(e);
+	}
+};
+
+export const logout = async (): Promise<void> => {
+	try {
+		const response = await axios.post<{ message: string }>(`${API_URL}/api/user/logout`, { withCredentials: true });
+		if (response.status === 200) {
+			console.log(response.data.message);
+		}
+	} catch (e) {
+		console.log(e);
+	}
+
+	User.logout();
+	File.clearFiles();
+	Folder.clearFolders();
 };

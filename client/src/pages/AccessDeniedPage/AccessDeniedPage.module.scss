@@ -1,0 +1,23 @@
+.access_denied_container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	text-align: center;
+}
+
+.access_denied_container h1 {
+	color: var(--color_text_negative);
+	margin-bottom: 20px;
+}
+
+.access_denied_container p {
+	color: var(----color_text_primary);
+	font-size: 18px;
+}
+
+.button {
+	margin-top: 20px;
+	height: 48px;
+}

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 
 export interface FileAttributes {
 	id: number;
@@ -13,17 +13,23 @@ export interface FileAttributes {
 }
 
 class File {
-	private _files?: FileAttributes[] | [];
+	@observable private _files: FileAttributes[] | [];
+
 	constructor() {
-		makeAutoObservable(this);
+		makeObservable(this);
+		this._files = [];
 	}
 
-	set files(files: FileAttributes[] | []) {
+	@action setFiles(files: FileAttributes[] | []) {
 		this._files = files;
 	}
 
 	get files(): FileAttributes[] | [] {
-		return this._files || [];
+		return this._files;
+	}
+
+	@action clearFiles() {
+		this._files = [];
 	}
 }
 

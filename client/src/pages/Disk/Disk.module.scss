@@ -15,32 +15,101 @@
 	flex-direction: column;
 	position: relative;
 
-	padding: 20px;
+	padding: 15px;
 	margin: auto;
 
 	border: 1px solid var(--separator);
 	border-radius: 20px;
 }
+
 .header {
 	font-size: var(--font-size-l);
-	height: 50px;
+	height: 40px;
 
 	display: flex;
-	align-items: center;
-
-	padding-bottom: 10px;
-	border-bottom: 1px solid var(--separator);
+	align-items: start;
+	justify-content: space-between;
+	padding-left: 5px;
 }
 
 .dropArea {
-  
 }
 
 .myDisk {
-  cursor: pointer;
+	cursor: pointer;
+}
+
+.addFolder {
+	height: calc(100% - 5px);
+	width: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	:hover {
+		fill: var(--color_backgroud_ui--hover);
+	}
+}
+
+.addFolderIcon {
+	cursor: pointer;
+	height: 70%;
+	transform: rotate(45deg);
+	fill: var(--color_backgroud_ui);
+	transition: var(--fast-anim-delay);
 }
 
 .files {
-	height: 100%;
+	overflow: auto;
+	overflow-x: hidden;
+	height: calc(100% - 85px);
 	width: 100%;
+}
+
+.filter {
+	height: 45px;
+	width: 100%;
+	border-bottom: 1px solid var(--separator);
+}
+
+.filterItem {
+	display: grid;
+	grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
+	align-items: center;
+
+	gap: 16px;
+}
+
+.rightFilter {
+	width: 20px;
+}
+
+.leftFilter {
+	width: 40px;
+}
+
+.name {
+	position: relative;
+	right: 48px;
+}
+
+.type {
+}
+
+.size {
+}
+
+.modified__date {
+}
+
+::-webkit-scrollbar {
+	position: absolute;
+	width: 5px;
+	height: 3px;
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #404040;
+	border-radius: 3px;
 }

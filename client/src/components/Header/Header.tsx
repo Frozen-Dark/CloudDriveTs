@@ -1,18 +1,31 @@
-import classes from "./Header.module.scss";
-import { ReactComponent as MyIcon } from "../../assets/svg/logo.svg";
+import cls from "./Header.module.scss";
+import LogoIcon from "@assets/icons/logo.svg";
+import { useState } from "react";
+import Profile from "@components/Profile/Profile";
+import Modal from "@ui/Modal/Modal";
+
 const Header = () => {
+	const [isOpenProfile, profileDispatch] = useState(false);
+
 	return (
-		<div className={classes.header}>
-			<div className={classes.wrapper}>
-				<div className={classes.logo}>
-					<MyIcon className={classes.logoSvg} />
+		<>
+			<div className={cls.header}>
+				<div className={cls.wrapper}>
+					<div className={cls.logo}>
+						<LogoIcon className={cls.logoSvg} />
+					</div>
+					<div className={cls.search}>
+						<input className={cls.findByName} type="text" placeholder={"Поиск по папке"} />
+					</div>
+					<div onClick={() => profileDispatch(true)} className={cls.profile}>
+						Profile
+					</div>
 				</div>
-				<div className={classes.search}>
-					<input className={classes.findByName} type="text" placeholder={"Поиск по папке"} />
-				</div>
-				<div className={classes.profile}>Profile</div>
 			</div>
-		</div>
+			<Modal className={cls.modal} isOpen={isOpenProfile} onClose={() => profileDispatch(false)} lazy={false}>
+				<Profile />
+			</Modal>
+		</>
 	);
 };
 

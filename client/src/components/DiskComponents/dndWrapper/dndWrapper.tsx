@@ -1,7 +1,7 @@
 import classes from "./dndWrapper.module.scss";
 import { HTMLProps, DragEvent } from "react";
-import { uploadFile } from "../../../actions/file.ts";
-import Folder from "../../../store/Folder.ts";
+import { uploadFile } from "@actions/file";
+import Folder from "@store/Folder";
 
 type DropWrapperType = {
 	setAddClasses: (className: string) => void;
@@ -15,12 +15,12 @@ const DropWrapper = (props: DropWrapperType) => {
 		setAddClasses(classes.test);
 	};
 
-	const fileUpload = async (files: FileList, folderId: number) => {
+	const fileUpload = async (files: FileList, parentId: number) => {
 		if (files.length !== 0) {
 			const filesArray = Array.from(files);
 
 			for (const file of filesArray) {
-				await uploadFile(file, folderId);
+				await uploadFile(file, parentId);
 			}
 		}
 	};
@@ -33,7 +33,9 @@ const DropWrapper = (props: DropWrapperType) => {
 		const files = e.dataTransfer.files;
 		const folderId = Folder.parentId;
 
-		fileUpload(files, folderId);
+		if (folderId) {
+			fileUpload(files, folderId);
+		}
 	};
 
 	const dragLeaveHandler = (e: DragEvent<HTMLDivElement>) => {

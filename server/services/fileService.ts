@@ -5,16 +5,17 @@ import MinoService from "@services/minoService";
 import { UploadedFile } from "express-fileupload";
 import path from "path";
 import UserService from "@services/userService";
+import ApiError from "@error/ApiError";
 
 class FileService {
 	async getById({ userId, id }: { userId: number; id: number }) {
 		if (!userId || !id) {
-			throw new Error("Некорректные данные для получения файла");
+			throw ApiError.notFound("Некорректные данные для получения файла");
 		}
 
 		const file = await File.findOne({ where: { userId, id } });
 		if (!file) {
-			throw new Error("Файл не найден");
+			throw ApiError.notFound("Файл не найден");
 		}
 
 		return file;
@@ -22,12 +23,12 @@ class FileService {
 
 	async getFilesByParentId({ userId, parentId }: { userId: number; parentId: number }) {
 		if (!userId || !parentId) {
-			throw new Error("Некорректные данные для получения файла");
+			throw ApiError.badRequest("Некорректные данные для получения файла");
 		}
 
 		const files = await File.findAll({ where: { userId, parentId } });
 		if (!files) {
-			throw new Error("Файлы не найдены");
+			throw ApiError.notFound("Файлы не найдены");
 		}
 
 		return files;
@@ -72,7 +73,9 @@ class FileService {
 		const fileName = decodeURIComponent(name);
 		const extension = path.extname(fileName);
 
-		if (!fileName) throw new Error("Некорректное имя файла");
+		if (!fileName) {
+			throw ApiError.badRequest("Некорректное имя файла");
+		}
 
 		const parentFolder = await FolderService.getById({ userId, id: parentId });
 

@@ -1,81 +1,89 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 import FileService from "@services/fileService";
 import FolderService from "@services/folderService";
+import ApiError from "../error/ApiError";
 
 class FileController {
-	async move(req: Request, res: Response) {
+	async move(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { fileId, parentId } = req.body;
 			const user = req.user;
 
 			if (!fileId || !parentId) {
-				return res.status(400).json({ message: "Необходимые параметры отсутствуют" });
+				return next(ApiError.badRequest("id файла или папки не найдены"));
 			}
 
 			await FileService.move({ userId: user.id, parentId, fileId });
 
 			return res.json({ message: "Файл успешно перемещен" });
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "Ошибка при перемещении файла" });
+			next(e);
 		}
 	}
 
-	async getFilesByParentId(req: Request, res: Response) {
+	async getFilesByParentId(req: Request, res: Response, next: NextFunction) {
 		try {
-			const user = req.user;
-			const parentId = req.body.parentId;
+			const userId = req.user.id;
+			let { parentId } = req.body;
 
-			const folders = await FolderService.getFoldersByParentId({ userId: user.id, parentId });
-			const files = await FileService.getFilesByParentId({ userId: user.id, parentId });
+			if (parentId === undefined) {
+				return next(ApiError.badRequest("Не указан id"));
+			}
 
-			return res.json({ folders, files });
+			const parentFolder =
+				parentId === null
+					? await FolderService.getRootFolder({ userId })
+					: await FolderService.getById({ userId, id: parentId });
+
+			parentId = parentId === null ? parentFolder.dataValues.id : parentId;
+
+			const folders = await FolderService.getFoldersByParentId({ userId, parentId });
+			const files = await FileService.getFilesByParentId({ userId, parentId });
+
+			return res.json({ folders, files, parentFolder });
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "getFiles error" });
+			next(e);
 		}
 	}
 
-	async rename(req: Request, res: Response) {
+	async rename(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { fileId, fileName } = req.body;
 			const userId = req.user.id;
 
 			if (!fileId || !fileName) {
-				return res.status(400).json({ message: "id или имя файла не найдены" });
+				return next(ApiError.badRequest("id или имя файла не указан"));
 			}
 
 			const file = await FileService.rename({ fileId, fileName, userId });
 
 			return res.json({ file });
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "renameFile error" });
+			next(e);
 		}
 	}
 
-	async delete(req: Request, res: Response) {
+	async delete(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { fileId } = req.body;
 			if (!fileId) {
-				return res.status(400).json({ message: "Имя файла не указано" });
+				return next(ApiError.badRequest("id файла не указано"));
 			}
 
 			await FileService.delete({ userId: req.user.id, fileId, mino: req.minioClient });
 
 			return res.json({ message: "Файл был удален" });
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "deleteFile error" });
+			next(e);
 		}
 	}
 
-	async upload(req: Request, res: Response) {
+	async upload(req: Request, res: Response, next: NextFunction) {
 		try {
 			const parentId = req.body.parentId;
 			if (!req.files?.file) {
-				return res.status(400).json({ message: "Файл не был загружен" });
+				return next(ApiError.badRequest("Файл не был загружен"));
 			}
 			const uploadFile = req.files.file as UploadedFile;
 
@@ -83,8 +91,7 @@ class FileController {
 
 			return res.json({ file });
 		} catch (e) {
-			console.log(e);
-			return res.status(400).json({ message: "uploadFile error" });
+			next(e);
 		}
 	}
 }

@@ -1,24 +1,18 @@
-import "./styles/App.css";
-import Router from "./components/Router/Router.tsx";
-import MainContainer from "./components/MainConteiner/MainContainer.tsx";
-import WallpaperContainer from "./components/WallpaperContainer/WallpaperContainer.tsx";
-import { useEffect, useRef } from "react";
-import { refresh } from "./actions/user.ts";
-import Header from "./components/Header/Header.tsx";
-function App() {
-	const state = useRef({ value: true });
+import "./styles/App.module.scss";
+import Router from "@components/Router/Router";
+import MainContainer from "@components/MainConteiner/MainContainer";
+import WallpaperContainer from "@components/WallpaperContainer/WallpaperContainer";
+import { useEffect } from "react";
+import { refresh } from "@actions/user";
 
+function App() {
 	useEffect(() => {
-		if (state.current.value) {
-			state.current.value = false;
-			refresh();
-		}
+		refresh();
 	}, []);
 
 	return (
 		<MainContainer>
 			<WallpaperContainer>
-				<Header />
 				<Router />
 			</WallpaperContainer>
 		</MainContainer>

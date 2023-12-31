@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import tokenService, { UserDecoded } from "@services/tokenService";
+import ApiError from "../error/ApiError";
 
 declare global {
 	namespace Express {
@@ -15,13 +16,13 @@ function authMiddleware(req: Request, res: Response, next: NextFunction) {
 		const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
 
 		if (!accessToken) {
-			return res.status(401).json({ message: "Не авторизован" });
+			return next(ApiError.badRequest("Нету токена"));
 		}
 
 		const userData = tokenService.validateAccessToken(accessToken);
 
 		if (!userData) {
-			return res.status(403).json({ message: "Доступ запрещен" });
+			return next(ApiError.unauthorized());
 		}
 		req.user = userData as UserDecoded;
 		next();

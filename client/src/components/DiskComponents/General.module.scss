@@ -14,8 +14,8 @@
 
 .item:hover {
 	background-color: var(--color_background_content);
-  
-	.menu img {
+
+	.menu svg {
 		opacity: 1;
 	}
 }
@@ -26,11 +26,12 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: var(--text_primary);
 
 	cursor: pointer;
 }
 
-.icon img {
+.icon svg {
 	height: 80%;
 }
 
@@ -38,6 +39,7 @@
 .type,
 .size,
 .modified__date {
+	font-size: var(--font-line-s);
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -54,8 +56,7 @@
 	cursor: pointer;
 }
 
-.menu img {
-	height: 60%;
+.menu svg {
+	width: 6px;
 	opacity: 0;
-	transition: 50ms;
 }

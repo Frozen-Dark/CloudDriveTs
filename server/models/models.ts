@@ -1,6 +1,7 @@
 import { DataTypes, Op, Sequelize } from "sequelize";
 import { ModelStatic, Model, Optional } from "sequelize";
 import sequelize from "@db";
+import ApiError from "@error/ApiError";
 
 interface UserAttributes {
 	id: number;
@@ -22,7 +23,7 @@ interface FolderAttributes {
 	id: number;
 	userId: number;
 	folderName: string;
-	parentId?: number | null;
+	parentId: number | null;
 	hasLink?: boolean;
 	foldersId?: Array<number>;
 	filesId?: Array<number>;
@@ -39,11 +40,12 @@ interface FileAttributes {
 	size: number;
 	extension: string;
 	parentId: number;
-	hasLink?: boolean;
+	hasLink: boolean;
 }
 
-interface FileCreationAttributes extends Optional<FileAttributes, "id"> {
+interface FileCreationAttributes extends Optional<FileAttributes, "id" | "hasLink"> {
 	id?: number;
+	hasLink?: boolean;
 }
 
 interface TokenAttributes {
@@ -54,21 +56,24 @@ interface TokenAttributes {
 	platform: string;
 	browser: string;
 	browserVersion?: string;
-	updatedAt?: Date;
+	updatedAt: Date;
 }
 
-interface TokenCreationAttributes extends Optional<TokenAttributes, "id"> {}
+interface TokenCreationAttributes extends Optional<TokenAttributes, "id" | "updatedAt"> {
+	id?: number;
+	updatedAt?: Date;
+}
 
 interface SharedLinkAttributes {
 	id: number;
 	folderId?: number;
 	fileId?: number;
 	isPublic?: boolean;
-	expiryDate?: Date;
+	expiryDate: Date;
 	link: string;
 }
 
-interface SharedLinkCreationAttributes extends Optional<SharedLinkAttributes, "id"> {}
+type SharedLinkCreationAttributes = Optional<SharedLinkAttributes, "id">;
 
 interface SharedLinkUsersAttributes {
 	id: number;
@@ -129,17 +134,18 @@ const Folder: ModelStatic<Model<FolderAttributes, FolderCreationAttributes>> = s
 		hooks: {
 			beforeUpdate: async (folder) => {
 				// Проверка на наличие папки с таким же именем в родительской папке
-				const { folderName, parentId, id } = folder.dataValues;
+				const { folderName, parentId, id, userId } = folder.dataValues;
 
 				const duplicateFolder = await Folder.findOne({
 					where: {
-						folderName: folderName,
-						parentId: parentId,
-						id: { [Op.ne]: id } // Исключение id текущей папки из поиска
+						id: { [Op.ne]: id }, // Исключение id текущей папки из поиска
+						userId,
+						parentId,
+						folderName
 					}
 				});
 				if (duplicateFolder) {
-					throw new Error("Папка с таким именем уже существует в этой родительской папке.");
+					throw ApiError.badRequest("Папка с таким именем уже существует в этой родительской папке");
 				}
 			}
 		}
@@ -181,7 +187,7 @@ const File: ModelStatic<Model<FileAttributes, FileCreationAttributes>> = sequeli
 					}
 				});
 				if (duplicateFile) {
-					throw new Error("Файл с таким именем и расширением уже существует в этой папке.");
+					throw ApiError.badRequest("Файл с таким именем и расширением уже существует в этой папке");
 				}
 			}
 		}
@@ -237,15 +243,15 @@ const SharedLink: ModelStatic<Model<SharedLinkAttributes, SharedLinkCreationAttr
 		hooks: {
 			beforeCreate: (sharedLink: any) => {
 				if (sharedLink.folderId && sharedLink.fileId) {
-					throw new Error("Только одно из полей folderId или fileId может быть заполнено!");
+					throw ApiError.badRequest("Только одно из полей folderId или fileId может быть заполнено");
 				}
 				if (!sharedLink.folderId && !sharedLink.fileId) {
-					throw new Error("Одно из полей folderId или fileId должно быть заполнено!");
+					throw ApiError.badRequest("Одно из полей folderId или fileId должно быть заполнено");
 				}
 			},
-			beforeUpdate: (sharedLink) => {
+			beforeUpdate: (sharedLink: any) => {
 				if (sharedLink.folderId && sharedLink.fileId) {
-					throw new Error("Только одно из полей folderId или fileId может быть заполнено!");
+					throw ApiError.badRequest("Одно из полей folderId или fileId должно быть заполнено");
 				}
 			}
 		}

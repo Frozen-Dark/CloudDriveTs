@@ -1,8 +1,8 @@
 import classes from "./General.module.scss";
-import { FolderAttributes } from "../../store/Folder.ts";
-import folderIcon from "../../assets/svg/folder.svg";
-import menuIcon from "../../assets/svg/dots.svg";
-import { getFiles } from "../../actions/file.ts";
+import FolderIcon from "@assets/icons/folder.svg";
+import MenuIcon from "@assets/icons/dots.svg";
+import { FolderAttributes } from "@store/Folder";
+import { getFiles } from "@actions/file";
 const Folder = ({ folder }: { folder: FolderAttributes }) => {
 	const { folderName, id, updatedAt } = folder;
 	const doubleClickHandler = async () => {
@@ -19,14 +19,14 @@ const Folder = ({ folder }: { folder: FolderAttributes }) => {
 	return (
 		<div onDoubleClick={doubleClickHandler} className={classes.item}>
 			<div onClick={openFolderHandler} className={classes.icon}>
-				<img src={folderIcon} alt="Файл" />
+				<FolderIcon />
 			</div>
 			<div className={classes.name}>{folderName}</div>
 			<div className={classes.type}>Папка</div>
 			<div></div>
 			<div className={classes.modified__date}>{modifiedDate}</div>
 			<div onClick={menuClickHandler} className={classes.menu}>
-				<img src={menuIcon} alt="Меню" />
+				<MenuIcon />
 			</div>
 		</div>
 	);

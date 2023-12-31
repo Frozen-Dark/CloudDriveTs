@@ -1,0 +1,31 @@
+.Text {
+    opacity: 1;
+}
+
+.title {
+    font-size: var(--font-size-l);
+}
+
+.text {
+    font-size: var(--font-size-m);
+}
+
+.primary {
+    .title {
+        color: var(--color_text_primary);
+    }
+
+    .text {
+        color: var(--color_text_secondary);
+    }
+}
+
+.error {
+    .title {
+        color: var(--color_text_negative);
+    }
+
+    .text {
+        color: var(--color_text_primary_invariably--hover);
+    }
+}

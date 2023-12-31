@@ -1,35 +1,50 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable, observable } from "mobx";
 
 export interface FolderAttributes {
 	id: number;
 	userId: number;
 	folderName: string;
-	parentId?: number;
+	parentId: number | null;
+	foldersId?: Array<number>;
+	filesId?: Array<number>;
 	hasLink?: boolean;
-	children?: Array<number>;
 	createdAt: string;
 	updatedAt: string;
 }
+
 class Folder {
-	private _folders?: FolderAttributes[] | [];
-	private _parentId?: number;
+	@observable private _parentFolder: FolderAttributes | null;
+	@observable private _folders: FolderAttributes[] | [];
 	constructor() {
-		makeAutoObservable(this);
+		this._folders = [];
+		this._parentFolder = null;
 	}
 
-	set parentId(id: number) {
-		this._parentId = id;
+	@action setParentFolder(folder: FolderAttributes | null) {
+		this._parentFolder = folder;
 	}
-	get parentId(): number {
-		return this._parentId || 1;
+	get parentFolder(): FolderAttributes | null {
+		return this._parentFolder || null;
 	}
 
-	set folders(folders: FolderAttributes[] | []) {
+	get parentId(): number | null {
+		return this._parentFolder?.parentId || null;
+	}
+
+	@action setFolders(folders: FolderAttributes[]) {
 		this._folders = folders;
+	}
+	@action addFolder(folder: FolderAttributes) {
+		this.setFolders([...this.folders, folder]);
 	}
 
 	get folders(): FolderAttributes[] | [] {
-		return this._folders || [];
+		return this._folders;
+	}
+
+	@action clearFolders() {
+		this._folders = [];
+		this._parentFolder = null;
 	}
 }
 

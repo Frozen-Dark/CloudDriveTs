@@ -1,27 +1,38 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    
-    "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "./",
-    "rootDir": "./",
-    "paths": {
-      "@components": ["src/components/*"]
-    },
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+	"compilerOptions": {
+		"outDir": "./dist/",
+		"plugins": [{ "name": "typescript-plugin-css-modules" }],
+		"noImplicitAny": true,
+		"experimentalDecorators": true,
+		"useDefineForClassFields": true,
+		"module": "esnext",
+		"target": "es6",
+		"strict": true,
+		"jsx": "react-jsx",
+		"allowJs": true,
+		"moduleResolution": "node",
+		"baseUrl": ".",
+		"paths": {
+			"@pages*": ["src/pages*"],
+			"@config*": ["src/config*"],
+			"@components*": ["src/components*"],
+			"@assets*": ["src/assets*"],
+			"@store*": ["src/store*"],
+			"@actions*": ["src/actions*"],
+			"@lib*": ["src/lib*"],
+			"@ui*": ["src/ui*"],
+			"@hooks*": ["src/hooks*"],
+		},
+		// esModuleInterop повзоляет работать с пакетами, которые используют
+		// common js как с обычными пакетами с помощью import (require() module.export) = common js
+		"esModuleInterop": true,
+		// импорт файлов без * as
+		"allowSyntheticDefaultImports": true
+	},
+	"ts-node": {
+		"compilerOptions": {
+			"module": "CommonJS"
+		}
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/app/types/global.d.ts"]
 }
