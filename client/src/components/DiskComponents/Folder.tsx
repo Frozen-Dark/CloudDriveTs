@@ -1,7 +1,7 @@
 import classes from "./General.module.scss";
-import FolderIcon from "@assets/icons/folder.svg";
-import MenuIcon from "@assets/icons/dots.svg";
 import { FolderAttributes } from "@app/providers/FolderProvider/lib/FolderContext";
+import Icon, { IconSize, IconWeight } from "@ui/Icon/Icon";
+import { IconLightName, IconRegularName } from "@lib/icons/icons";
 
 interface FolderProps {
 	folder: FolderAttributes;
@@ -23,15 +23,15 @@ const Folder = ({ folder, getFolders }: FolderProps) => {
 
 	return (
 		<div onDoubleClick={doubleClickHandler} className={classes.item}>
-			<div onClick={openFolderHandler} className={classes.icon}>
-				<FolderIcon />
+			<div onClick={openFolderHandler} style={{ opacity: "1" }} className={classes.icon}>
+				<Icon name={IconLightName.Folder} weight={IconWeight.Light} size={IconSize.L} />
 			</div>
 			<div className={classes.name}>{folderName}</div>
 			<div className={classes.type}>Папка</div>
 			<div></div>
 			<div className={classes.modified__date}>{modifiedDate}</div>
 			<div onClick={menuClickHandler} className={classes.menu}>
-				<MenuIcon />
+				<Icon name={IconRegularName.Ellipsis} className={classes.icon} size={IconSize.L} />
 			</div>
 		</div>
 	);
