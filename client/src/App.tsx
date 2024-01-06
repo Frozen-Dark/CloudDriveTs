@@ -6,6 +6,10 @@ import { useEffect } from "react";
 import { refresh } from "@actions/user";
 import FolderProvider from "./app/providers/FolderProvider/ui/FolderProvider";
 import FileProvider from "@app/providers/FileProvider/ui/FileProvider";
+import { faDownload, faFolderDownload, faUser } from "@fortawesome/pro-regular-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+library.add(faUser, faDownload);
 
 function App() {
 	useEffect(() => {

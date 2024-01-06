@@ -33,8 +33,8 @@ const Profile: FC = () => {
 	const Username = "User";
 	const Email = "test@mail.ru";
 
-	const exitHandler = () => {
-		logout();
+	const exitHandler = async () => {
+		await logout();
 	};
 
 	return (

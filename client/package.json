@@ -19,6 +19,9 @@
 		"@babel/preset-env": "^7.22.7",
 		"@babel/preset-react": "^7.22.5",
 		"@babel/preset-typescript": "^7.22.5",
+		"@fortawesome/fontawesome-pro": "^6.2.0",
+		"@fortawesome/fontawesome-svg-core": "^6.5.1",
+		"@fortawesome/pro-regular-svg-icons": "^6.4.0",
 		"@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
 		"@svgr/webpack": "^8.0.1",
 		"@types/jest": "^29.5.3",
@@ -60,6 +63,7 @@
 		"webpack-dev-server": "^4.7.4"
 	},
 	"dependencies": {
+		"@fortawesome/react-fontawesome": "^0.2.0",
 		"axios": "^1.6.0",
 		"mobx": "^6.10.2",
 		"mobx-react": "^9.0.1",

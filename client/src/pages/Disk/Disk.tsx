@@ -9,6 +9,8 @@ import { classNames } from "@lib/classNames/classNames";
 import { FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
 import { getFiles } from "@actions/file";
 import { FileContext } from "@app/providers/FileProvider/lib/FileContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 const Disk = () => {
 	const [addClasses, setAddClasses] = useState<string>("");
 
@@ -50,7 +52,10 @@ const Disk = () => {
 								<div className={cls.type}>Тип</div>
 								<div className={cls.size}>Размер файла</div>
 								<div className={cls.modified__date}>Последнее изменение</div>
-								<div className={cls.rightFilter}></div>
+
+								<div className={cls.rightFilter}>
+									<FontAwesomeIcon icon={["far", "download"]} />
+								</div>
 							</div>
 						</div>
 
