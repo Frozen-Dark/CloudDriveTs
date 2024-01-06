@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { FolderAttributes } from "@store/Folder";
+import { FolderAttributes } from "@app/providers/FolderProvider/lib/FolderContext";
 
 type FolderPath = {
 	name: string;

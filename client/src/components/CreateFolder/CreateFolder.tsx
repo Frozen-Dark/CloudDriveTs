@@ -1,5 +1,5 @@
 import cls from "./CreateFolder.module.scss";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { classNames } from "@lib/classNames/classNames";
 import Text from "@ui/Text/Text";
 import Input from "@ui/Input/Input";
@@ -8,24 +8,23 @@ import Modal from "@ui/Modal/Modal";
 import classes from "@pages/Disk/Disk.module.scss";
 import AddFolderIcon from "@assets/icons/cancel.svg";
 import { createFolder } from "@actions/file";
-import Folder from "@store/Folder";
+import { observer } from "mobx-react";
+import { FolderContext } from "../../app/providers/FolderProvider/lib/FolderContext";
 
-export interface CreateFolderProps {
-	className?: string;
-}
-
-const CreateFolder = ({ className }: CreateFolderProps) => {
+const CreateFolder = ({ className }: { className?: string }) => {
 	const [folderName, setFolderName] = useState<string>("");
 	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const { parentFolder } = useContext(FolderContext);
 
 	const onChangeName = (value: string) => {
 		setFolderName(value);
 	};
 
-	const onCreateHandler = () => {
-		const parentId = Folder.parentId;
+	const onCreateHandler = async () => {
+		const parentId = parentFolder?.id;
 		if (parentId) {
-			createFolder({ folderName, parentId });
+			await createFolder({ folderName, parentId });
+			onCloseHandler();
 		}
 	};
 
@@ -68,4 +67,4 @@ const CreateFolder = ({ className }: CreateFolderProps) => {
 	);
 };
 
-export default CreateFolder;
+export default observer(CreateFolder);

@@ -1,7 +1,5 @@
 import axios from "axios";
 import User, { UserAttributes } from "@store/User";
-import File from "@store/File";
-import Folder from "@store/Folder";
 
 const API_URL = "http://localhost:5000";
 axios.defaults.withCredentials = true;
@@ -108,6 +106,4 @@ export const logout = async (): Promise<void> => {
 	}
 
 	User.logout();
-	File.clearFiles();
-	Folder.clearFolders();
 };

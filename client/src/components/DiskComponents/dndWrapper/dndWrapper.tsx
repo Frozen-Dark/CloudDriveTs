@@ -1,13 +1,16 @@
 import classes from "./dndWrapper.module.scss";
-import { HTMLProps, DragEvent } from "react";
+import { HTMLProps, DragEvent, useContext } from "react";
 import { uploadFile } from "@actions/file";
-import Folder from "@store/Folder";
+import { FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
+import { FileContext } from "@app/providers/FileProvider/lib/FileContext";
 
 type DropWrapperType = {
 	setAddClasses: (className: string) => void;
 } & HTMLProps<HTMLDivElement>;
 const DropWrapper = (props: DropWrapperType) => {
 	const { children, setAddClasses } = props;
+	const { parentFolder } = useContext(FolderContext);
+	const { addFile } = useContext(FileContext);
 
 	const dragEnterHandler = (e: DragEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -20,21 +23,24 @@ const DropWrapper = (props: DropWrapperType) => {
 			const filesArray = Array.from(files);
 
 			for (const file of filesArray) {
-				await uploadFile(file, parentId);
+				const response = await uploadFile(file, parentId);
+				if (response?.status === 200) {
+					addFile(response.data.file);
+				}
 			}
 		}
 	};
 
-	const dropHandler = (e: DragEvent<HTMLDivElement>) => {
+	const dropHandler = async (e: DragEvent<HTMLDivElement>) => {
 		e.preventDefault();
 
 		setAddClasses("");
 
 		const files = e.dataTransfer.files;
-		const folderId = Folder.parentId;
+		const folderId = parentFolder?.id;
 
 		if (folderId) {
-			fileUpload(files, folderId);
+			await fileUpload(files, folderId);
 		}
 	};
 

@@ -1,18 +1,23 @@
 import classes from "./General.module.scss";
 import FolderIcon from "@assets/icons/folder.svg";
 import MenuIcon from "@assets/icons/dots.svg";
-import { FolderAttributes } from "@store/Folder";
-import { getFiles } from "@actions/file";
-const Folder = ({ folder }: { folder: FolderAttributes }) => {
-	const { folderName, id, updatedAt } = folder;
-	const doubleClickHandler = async () => {
-		await getFiles(id);
-	};
+import { FolderAttributes } from "@app/providers/FolderProvider/lib/FolderContext";
 
+interface FolderProps {
+	folder: FolderAttributes;
+	getFolders: (id: number) => void;
+}
+
+const Folder = ({ folder, getFolders }: FolderProps) => {
+	const { folderName, id, updatedAt } = folder;
 	const modifiedDate = updatedAt.split("T")[0];
 
+	const doubleClickHandler = async () => {
+		await getFolders(id);
+	};
+
 	const openFolderHandler = async () => {
-		await getFiles(id);
+		await getFolders(id);
 	};
 	function menuClickHandler() {}
 

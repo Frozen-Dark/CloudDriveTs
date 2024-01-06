@@ -13,6 +13,7 @@
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"paths": {
+			"@app*": ["src/app*"],
 			"@pages*": ["src/pages*"],
 			"@config*": ["src/config*"],
 			"@components*": ["src/components*"],

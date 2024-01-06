@@ -8,6 +8,7 @@ export function buildResolvers(options: BuildOptions): ResolveOptions {
 		modules: [options.paths.src, "node_modules"],
 		mainFiles: ["index"],
 		alias: {
+			"@app": resolve(options.paths.src, "app"),
 			"@pages": resolve(options.paths.src, "pages"),
 			"@config": resolve(options.paths.src, "config"),
 			"@components": resolve(options.paths.src, "components"),

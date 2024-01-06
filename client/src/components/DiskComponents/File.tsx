@@ -1,7 +1,7 @@
 import classes from "./General.module.scss";
-import { FileAttributes } from "@store/File";
 import MenuIcon from "@assets/icons/dots.svg";
 import FileSvg from "@assets/FileSvg";
+import { FileAttributes } from "@app/providers/FileProvider/lib/FileContext";
 const File = ({ file }: { file: FileAttributes }) => {
 	const { fileName, extension, size, updatedAt } = file;
 	const filterExtension = extension.replace(".", "");
