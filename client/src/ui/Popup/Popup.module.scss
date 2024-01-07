@@ -1,2 +1,6 @@
-.popup {
+.Popup {
+	border-radius: var(--regular-border);
+	color: var(--color_text_primary);
+	background: var(--color_background_content);
+	border: 1px solid var(--separator);
 }

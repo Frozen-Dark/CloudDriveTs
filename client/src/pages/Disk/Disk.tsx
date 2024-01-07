@@ -9,9 +9,15 @@ import { classNames } from "@lib/classNames/classNames";
 import { FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
 import { getFiles } from "@actions/file";
 import { FileContext } from "@app/providers/FileProvider/lib/FileContext";
+import DiskPopup from "@components/DiskComponents/DiskPopup/DiskPopup";
+import { IconLightName } from "@lib/icons/icons";
+import { useMousePosition } from "@hooks/hooks";
 
 const Disk = () => {
-	const [addClasses, setAddClasses] = useState<string>("");
+	const [addClasses, setAddClasses] = useState("");
+	const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+	const { coords, handleEllipsesClick } = useMousePosition(() => setIsPopupOpen(true));
 
 	const { folders, setFolders, setParentFolder } = useContext(FolderContext);
 	const { files, setFiles } = useContext(FileContext);
@@ -57,7 +63,12 @@ const Disk = () => {
 
 						<div className={cls.files}>
 							{folders.map((fld) => (
-								<FolderComponent key={fld.id} folder={fld} getFolders={openFolder} />
+								<FolderComponent
+									key={fld.id}
+									folder={fld}
+									getFolders={openFolder}
+									menuClickHandler={handleEllipsesClick}
+								/>
 							))}
 							{files.map((file) => (
 								<FileComponent key={file.id} file={file} />
@@ -66,6 +77,13 @@ const Disk = () => {
 					</DropWrapper>
 				</div>
 			</div>
+			<DiskPopup
+				iconName={IconLightName.Folder}
+				name={"Test"}
+				isOpen={isPopupOpen}
+				setIsOpen={setIsPopupOpen}
+				coords={coords}
+			/>
 		</>
 	);
 };

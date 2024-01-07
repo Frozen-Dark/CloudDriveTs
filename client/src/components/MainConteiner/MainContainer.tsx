@@ -1,10 +1,10 @@
 import classes from "./MainContainer.module.scss";
 import { FC, HTMLProps, ReactNode } from "react";
-interface MainContainer extends HTMLProps<HTMLDivElement> {
+interface MainContainerProps extends HTMLProps<HTMLDivElement> {
 	children: ReactNode;
 }
 
-const MainContainer: FC<MainContainer> = ({ children }) => {
+const MainContainer: FC<MainContainerProps> = ({ children }) => {
 	return (
 		<div data-theme={"dark"} className={classes.mainContainer}>
 			{children}

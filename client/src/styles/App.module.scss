@@ -2,6 +2,7 @@
 	--main-anim-delay: 200ms;
 	--second-anim-delay: 200ms;
 	--fast-anim-delay: 100ms;
+	--backround-anim: background 34ms linear 0s;
 	--color_background_positive: #4bb34b;
 	--color_background_positive--hover: #48ac4a;
 	--color_background_positive--active: #45a64a;
@@ -19,19 +20,20 @@
 	--overlay-shadow: rgba(0 0 0 / 30%);
 	--regular-border: 12px;
 	--button-border: 7px;
-	--font-size-s: 10px;
-	--font-line-s: 16px;
-	--font-size-m: 14px;
-	--font-line-m: 20px;
-	--font-size-l: 24px;
-	--font-line-l: 26px;
-	--font-size-xl: 32px;
-	--font-line-xl: 40px;
+	--font-size-s: 12px;
+	--font-line-s: 18px;
+	--font-size-m: 16px;
+	--font-line-m: 24px;
+	--font-size-l: 20px;
+	--font-line-l: 30px;
+	--font-size-xl: 24px;
+	--font-line-xl: 36px;
 }
 
 [data-theme="dark"] {
 	--color_background: #313131;
 	--color_background_content: #353535;
+	--color_background_content--hover: #414141;
 	--color_background_secondary: #333333;
 	--color_background_tertiary: #313131;
 	--color_backgroud_ui: #e1e3e6;

@@ -25,7 +25,11 @@
 	background: var(--color_background_content);
 	user-select: none;
 
-	transition: height 300ms, opacity 150ms linear, transform 150ms ease, box-shadow 150ms linear;
+	transition:
+		height 300ms,
+		opacity 150ms linear,
+		transform 150ms ease,
+		box-shadow 150ms linear;
 }
 
 .opened {
@@ -34,7 +38,7 @@
 	z-index: var(--modal-z-index);
 
 	.overlay {
-		background:var(--overlay-color);
+		background: var(--overlay-color);
 	}
 
 	.content {

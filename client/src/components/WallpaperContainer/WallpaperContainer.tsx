@@ -1,10 +1,10 @@
 import classes from "./WallpaperContainer.module.scss";
 import { FC, HTMLProps, ReactNode } from "react";
-interface WallpaperContainer extends HTMLProps<HTMLDivElement> {
+interface WallpaperContainerProps extends HTMLProps<HTMLDivElement> {
 	children: ReactNode;
 }
 
-const WallpaperContainer: FC<WallpaperContainer> = ({ children }) => {
+const WallpaperContainer: FC<WallpaperContainerProps> = ({ children }) => {
 	return <div className={classes.wallpaperContainer}>{children}</div>;
 };
 

@@ -1,21 +1,24 @@
-import { HTMLAttributes, ReactNode, useEffect, useRef, useState } from "react";
+import { HTMLAttributes, ReactNode, useRef } from "react";
 import React from "react";
-import { useOutsideClick } from "@hooks/hooks";
+import { useKeydownListener, useOutsideClick } from "@hooks/hooks";
 import { classNames } from "@lib/classNames/classNames";
 import cls from "./Popup.module.scss";
 
 interface PopupProps extends HTMLAttributes<HTMLDivElement> {
 	children: ReactNode;
 	isOpen: boolean;
-	setIsOpen: () => void;
+	setIsOpen: (value: boolean) => void;
 }
+
 const Popup = (props: PopupProps) => {
-	const { children, isOpen, setIsOpen, className } = props;
+	const { children, isOpen, setIsOpen, className, ...otherProps } = props;
 	const popupRef = useRef(null);
-	useOutsideClick([popupRef], () => {}, true);
+
+	useOutsideClick([popupRef], () => setIsOpen(false), true);
+	useKeydownListener(["Escape"], () => setIsOpen(false));
 
 	return (
-		<div className={classNames(cls.popup, {}, [className])} ref={popupRef}>
+		<div className={classNames(cls.Popup, {}, [className])} ref={popupRef} {...otherProps}>
 			{children}
 		</div>
 	);

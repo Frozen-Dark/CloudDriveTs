@@ -16,19 +16,33 @@ export enum IconWeight {
 	Light = "fal"
 }
 
+export enum IconTheme {
+	REGULAR = "regular",
+	ERROR = "error",
+	ACCENT = "accent"
+}
+
 interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, "mask"> {
 	className?: string;
 	size?: IconSize;
 	weight?: IconWeight;
+	theme?: IconTheme;
 	name: IconLightName | IconRegularName;
 }
 
 const Icon = (props: IconProps) => {
-	const { className, size = IconSize.M, weight = IconWeight.Regular, name, ...otherProps } = props;
+	const {
+		className,
+		size = IconSize.M,
+		theme = IconTheme.REGULAR,
+		weight = IconWeight.Light,
+		name,
+		...otherProps
+	} = props;
 
 	return (
 		<FontAwesomeIcon
-			className={classNames(cls.Icon, {}, [className, cls[size]])}
+			className={classNames(cls.Icon, {}, [className, cls[size], cls[theme]])}
 			icon={[weight, name]}
 			{...otherProps}
 		/>
