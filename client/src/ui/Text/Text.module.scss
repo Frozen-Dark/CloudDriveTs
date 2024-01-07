@@ -1,31 +1,57 @@
-.Text {
-    opacity: 1;
-}
-
 .title {
-    font-size: var(--font-size-l);
+	font-size: var(--font-size-l);
 }
 
 .text {
-    font-size: var(--font-size-m);
+	font-size: var(--font-size-m);
+}
+
+.size_s {
+	font-size: var(--font-size-s);
+	line-height: var(--font-line-s);
+}
+
+.size_m {
+	font-size: var(--font-size-m);
+	line-height: var(--font-line-m);
+}
+
+.size_l {
+	font-size: var(--font-size-l);
+	line-height: var(--font-line-l);
+}
+
+.size_xl {
+	font-size: var(--font-size-xl);
+	line-height: var(--font-line-xl);
+}
+
+.same {
+	.title {
+		color: var(--color_text_primary);
+	}
+
+	.text {
+		color: var(--color_text_primary);
+	}
 }
 
 .primary {
-    .title {
-        color: var(--color_text_primary);
-    }
+	.title {
+		color: var(--color_text_primary);
+	}
 
-    .text {
-        color: var(--color_text_secondary);
-    }
+	.text {
+		color: var(--color_text_secondary);
+	}
 }
 
 .error {
-    .title {
-        color: var(--color_text_negative);
-    }
+	.title {
+		color: var(--color_text_negative);
+	}
 
-    .text {
-        color: var(--color_text_primary_invariably--hover);
-    }
+	.text {
+		color: var(--color_text_negative);
+	}
 }

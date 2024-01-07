@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import React, { KeyboardEvent, RefObject, useEffect, useRef, useState } from "react";
 
 export const useCaret = () => {
 	const spanRef = useRef<HTMLInputElement>(null);
@@ -47,4 +47,30 @@ export const useOutsideClick = (elements: RefObject<HTMLDivElement>[], callback:
 
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, [elements, callback, isActive]);
+};
+
+export const useKeydownListener = (keys: KeyboardEvent["key"][], callback: (e: KeyboardEvent) => void) => {
+	useEffect(() => {
+		const handleKeyPress: EventListener = (event: Event) => {
+			const keyboardEvent = event as unknown as KeyboardEvent;
+			if (keys.includes(keyboardEvent.key)) {
+				callback(keyboardEvent);
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyPress);
+
+		return () => window.removeEventListener("keydown", handleKeyPress);
+	}, [keys, callback]);
+};
+
+export const useMousePosition = (callback: () => void) => {
+	const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+	const handleEllipsesClick = (event: React.MouseEvent) => {
+		setCoords({ x: event.clientX, y: event.clientY });
+		callback();
+	};
+
+	return { coords, handleEllipsesClick };
 };

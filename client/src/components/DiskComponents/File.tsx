@@ -1,9 +1,8 @@
 import classes from "./General.module.scss";
-import MenuIcon from "@assets/icons/dots.svg";
-import FileSvg from "@assets/FileSvg";
 import { FileAttributes } from "@app/providers/FileProvider/lib/FileContext";
 import Icon, { IconSize, IconWeight } from "@ui/Icon/Icon";
 import { IconLightName, IconRegularName } from "@lib/icons/icons";
+
 const File = ({ file }: { file: FileAttributes }) => {
 	const { fileName, extension, size, updatedAt } = file;
 	const filterExtension = extension.replace(".", "");
@@ -23,7 +22,12 @@ const File = ({ file }: { file: FileAttributes }) => {
 			<div className={classes.size}>{parsedSize}</div>
 			<div className={classes.modified__date}>{modifiedDate}</div>
 			<div onClick={menuClickHandler} className={classes.menu}>
-				<Icon name={IconRegularName.Ellipsis} className={classes.icon} size={IconSize.L} />
+				<Icon
+					name={IconRegularName.Ellipsis}
+					weight={IconWeight.Regular}
+					className={classes.icon}
+					size={IconSize.L}
+				/>
 			</div>
 		</div>
 	);

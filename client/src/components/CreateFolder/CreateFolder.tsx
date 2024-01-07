@@ -5,11 +5,10 @@ import Text from "@ui/Text/Text";
 import Input from "@ui/Input/Input";
 import Button, { ButtonSize, ButtonTheme } from "@ui/Button/Button";
 import Modal from "@ui/Modal/Modal";
-import classes from "@pages/Disk/Disk.module.scss";
 import { createFolder } from "@actions/file";
 import { observer } from "mobx-react";
 import { FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
-import Icon, { IconSize, IconWeight } from "@ui/Icon/Icon";
+import Icon, { IconSize } from "@ui/Icon/Icon";
 import { IconLightName } from "@lib/icons/icons";
 
 const CreateFolder = ({ className }: { className?: string }) => {
@@ -35,8 +34,8 @@ const CreateFolder = ({ className }: { className?: string }) => {
 
 	return (
 		<>
-			<div style={{ cursor: "pointer" }} onClick={() => setIsOpen(true)} className={classes.addFolder}>
-				<Icon name={IconLightName.AddFolder} size={IconSize.L} weight={IconWeight.Light} />
+			<div onClick={() => setIsOpen(true)} className={cls.addFolder}>
+				<Icon name={IconLightName.AddFolder} size={IconSize.L} />
 			</div>
 			<Modal isOpen={isOpen} lazy={true} onClose={onCloseHandler}>
 				<div className={classNames(cls.CreateFolder, {}, [className])}>

@@ -1,5 +1,17 @@
 .Icon {
-	fill: var(--color_backgroud_ui);
+	user-select: none;
+}
+
+.regular {
+	color: var(--color_backgroud_ui);
+}
+
+.error {
+	color: var(--color_text_negative);
+}
+
+.accent {
+	color: var(--color_backgroud_ui_accent);
 }
 
 .size_s {

@@ -1,0 +1,56 @@
+.FilesPopup {
+	display: flex;
+	flex-direction: column;
+	padding: 6px 6px;
+}
+
+.divider {
+	width: calc(100% + 12px);
+	position: relative;
+	left: -6px;
+	height: 1px;
+	background-color: var(--separator);
+	list-style: none;
+	margin: 6px 0;
+}
+
+.popup {
+	position: absolute;
+}
+
+
+.item {
+	display: flex;
+	align-items: center;
+
+	height: 36px;
+	padding: 0 25px;
+
+	transition: var(--backround-anim);
+	border-radius: var(--regular-border);
+
+	cursor: pointer;
+
+	&:hover {
+		background-color: var(--color_background_content--hover);
+	}
+
+	& svg {
+		margin-right: 15px;
+	}
+}
+
+.header {
+	display: flex;
+	align-items: center;
+
+	height: 36px;
+	padding: 0 25px;
+
+	transition: var(--backround-anim);
+	border-radius: var(--regular-border);
+
+	& svg {
+		margin-right: 15px;
+	}
+}

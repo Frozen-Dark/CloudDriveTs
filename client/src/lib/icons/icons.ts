@@ -1,15 +1,20 @@
-import { faFolderPlus, faFolder, faFile } from "@fortawesome/pro-light-svg-icons";
+import {
+	faFolderPlus,
+	faFolder,
+	faStar,
+	faFile,
+	faPen,
+	faFileCircleInfo,
+	faTrash
+} from "@fortawesome/pro-light-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 import {
 	faDownload,
 	faEllipsisVertical,
-	faLink,
 	faMagnifyingGlass,
-	faPen,
 	faPlus,
-	faStar,
-	faTrash,
+	faLink,
 	faUserPlus
 } from "@fortawesome/pro-regular-svg-icons";
 
@@ -18,35 +23,38 @@ export enum IconRegularName {
 	Ellipsis = "ellipsis-vertical",
 	Plus = "plus",
 	UserPlus = "user-plus",
-	SearchGlass = "magnifying-glass",
-	Pen = "pen",
 	Link = "link",
-	Trash = "trash",
-	Star = "star"
+	SearchGlass = "magnifying-glass"
 }
 
 export enum IconLightName {
 	AddFolder = "folder-plus",
 	Folder = "folder",
-	File = "file"
+	File = "file",
+	Pen = "pen",
+	Star = "star",
+	Trash = "trash",
+	FileInfo = "file-circle-info"
 }
 
 const iconsRegular = {
 	faDownload,
 	faEllipsisVertical,
 	faPlus,
+	faLink,
 	faUserPlus,
 	faMagnifyingGlass,
 	faPen,
-	faLink,
-	faTrash,
-	faStar
+	faTrash
 };
 
 const iconsLight = {
 	faFolderPlus,
 	faFolder,
-	faFile
+	faFile,
+	faStar,
+	faFileCircleInfo,
+	faEllipsisVertical
 };
 
 library.add(...Object.values(iconsRegular), ...Object.values(iconsLight));
