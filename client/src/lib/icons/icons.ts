@@ -10,8 +10,7 @@ import {
 	faPlus,
 	faStar,
 	faTrash,
-	faUserPlus,
-	IconDefinition
+	faUserPlus
 } from "@fortawesome/pro-regular-svg-icons";
 
 export enum IconRegularName {
@@ -32,22 +31,22 @@ export enum IconLightName {
 	File = "file"
 }
 
-export const iconsRegular: Record<IconRegularName, IconDefinition> = {
-	download: faDownload,
-	"ellipsis-vertical": faEllipsisVertical,
-	plus: faPlus,
-	"user-plus": faUserPlus,
-	"magnifying-glass": faMagnifyingGlass,
-	pen: faPen,
-	link: faLink,
-	trash: faTrash,
-	star: faStar
+export const iconsRegular = {
+	faDownload,
+	faEllipsisVertical,
+	faPlus,
+	faUserPlus,
+	faMagnifyingGlass,
+	faPen,
+	faLink,
+	faTrash,
+	faStar
 };
 
-export const iconsLight: Record<IconLightName, IconDefinition> = {
-	"folder-plus": faFolderPlus,
-	folder: faFolder,
-	file: faFile
+export const iconsLight = {
+	faFolderPlus,
+	faFolder,
+	faFile
 };
 
 library.add(...Object.values(iconsRegular), ...Object.values(iconsLight));
