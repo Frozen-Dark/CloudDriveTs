@@ -1,5 +1,5 @@
 .item {
-	height: 60px;
+	height: 50px;
 	width: 100%;
 
 	display: grid;
@@ -7,21 +7,22 @@
 	align-items: center;
 
 	gap: 16px;
-	padding: 8px;
+	padding: 5px;
 
 	border-bottom: 1px solid var(--separator);
-}
 
-.item:hover {
-	background-color: var(--color_background_content);
+	&:hover {
+		background-color: var(--color_background_content);
 
-	.menu svg {
-		opacity: 1;
+		.icon {
+			opacity: 1;
+		}
 	}
 }
 
 .icon {
 	height: 100%;
+	opacity: 0;
 
 	display: flex;
 	justify-content: center;
@@ -29,10 +30,6 @@
 	color: var(--text_primary);
 
 	cursor: pointer;
-}
-
-.icon svg {
-	height: 80%;
 }
 
 .name,
@@ -47,16 +44,11 @@
 
 .menu {
 	height: 100%;
-	width: 20px;
+	width: 30px;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
 	cursor: pointer;
-}
-
-.menu svg {
-	width: 6px;
-	opacity: 0;
 }

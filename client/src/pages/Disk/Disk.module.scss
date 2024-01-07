@@ -39,26 +39,6 @@
 	cursor: pointer;
 }
 
-.addFolder {
-	height: calc(100% - 5px);
-	width: 40px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	:hover {
-		fill: var(--color_backgroud_ui--hover);
-	}
-}
-
-.addFolderIcon {
-	cursor: pointer;
-	height: 70%;
-	transform: rotate(45deg);
-	fill: var(--color_backgroud_ui);
-	transition: var(--fast-anim-delay);
-}
-
 .files {
 	overflow: auto;
 	overflow-x: hidden;
