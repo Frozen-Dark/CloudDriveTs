@@ -31,7 +31,7 @@ export enum IconLightName {
 	File = "file"
 }
 
-export const iconsRegular = {
+const iconsRegular = {
 	faDownload,
 	faEllipsisVertical,
 	faPlus,
@@ -43,7 +43,7 @@ export const iconsRegular = {
 	faStar
 };
 
-export const iconsLight = {
+const iconsLight = {
 	faFolderPlus,
 	faFolder,
 	faFile
