@@ -64,11 +64,25 @@ interface TokenCreationAttributes extends Optional<TokenAttributes, "id" | "upda
 	updatedAt?: Date;
 }
 
+export enum EditType {
+	NONE = "none",
+	PART = "part",
+	FULL = "full"
+}
+
+export enum AccessType {
+	GENERAL = "general",
+	LOGGED = "logged",
+	PRIVATE = "private"
+}
+
 interface SharedLinkAttributes {
 	id: number;
 	folderId?: number;
 	fileId?: number;
-	isPublic?: boolean;
+	accessType?: AccessType;
+	editType?: EditType;
+	allowedUsersId?: number[];
 	expiryDate: Date;
 	link: string;
 }
@@ -115,9 +129,10 @@ const Folder: ModelStatic<Model<FolderAttributes, FolderCreationAttributes>> = s
 		userId: { type: DataTypes.INTEGER, references: { model: User, key: "id" } },
 		folderName: { type: DataTypes.STRING, allowNull: false },
 		parentId: { type: DataTypes.INTEGER },
-		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false },
 		foldersId: { type: DataTypes.ARRAY(DataTypes.INTEGER) },
-		filesId: { type: DataTypes.ARRAY(DataTypes.INTEGER) }
+		filesId: { type: DataTypes.ARRAY(DataTypes.INTEGER) },
+		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false },
+		isFavorites: { type: DataTypes.BOOLEAN, defaultValue: false }
 	},
 	{
 		indexes: [
@@ -161,7 +176,8 @@ const File: ModelStatic<Model<FileAttributes, FileCreationAttributes>> = sequeli
 		size: { type: DataTypes.BIGINT },
 		extension: { type: DataTypes.STRING },
 		parentId: { type: DataTypes.INTEGER, references: { model: Folder, key: "id" } },
-		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false }
+		hasLink: { type: DataTypes.BOOLEAN, defaultValue: false },
+		isFavorites: { type: DataTypes.BOOLEAN, defaultValue: false }
 	},
 	{
 		indexes: [
@@ -225,9 +241,16 @@ const SharedLink: ModelStatic<Model<SharedLinkAttributes, SharedLinkCreationAttr
 		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 		folderId: { type: DataTypes.INTEGER, allowNull: true, references: { model: Folder, key: "id" } },
 		fileId: { type: DataTypes.INTEGER, allowNull: true, references: { model: File, key: "id" } },
-		isPublic: { type: DataTypes.BOOLEAN, defaultValue: false },
-		expiryDate: { type: DataTypes.DATE },
-		link: { type: DataTypes.STRING, unique: true }
+		link: { type: DataTypes.STRING, unique: true },
+		accessType: {
+			type: DataTypes.ENUM("general", "logged", "private"),
+			defaultValue: "logged"
+		},
+		editType: {
+			type: DataTypes.ENUM("none", "part", "full"),
+			defaultValue: "none"
+		},
+		expiryDate: { type: DataTypes.DATE }
 	},
 	{
 		indexes: [
@@ -251,7 +274,7 @@ const SharedLink: ModelStatic<Model<SharedLinkAttributes, SharedLinkCreationAttr
 			},
 			beforeUpdate: (sharedLink: any) => {
 				if (sharedLink.folderId && sharedLink.fileId) {
-					throw ApiError.badRequest("Одно из полей folderId или fileId должно быть заполнено");
+					throw ApiError.badRequest("Только одно из полей folderId или fileId может быть заполнено");
 				}
 			}
 		}
@@ -264,7 +287,12 @@ const SharedLinkUsers: ModelStatic<Model<SharedLinkUsersAttributes, SharedLinkUs
 		{
 			id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 			userId: { type: DataTypes.INTEGER, references: { model: User, key: "id" } },
-			sharedLinkId: { type: DataTypes.INTEGER, references: { model: SharedLink, key: "id" } }
+			sharedLinkId: { type: DataTypes.INTEGER, references: { model: SharedLink, key: "id" } },
+			allowedUsersId: {
+				type: DataTypes.ARRAY(DataTypes.INTEGER),
+				allowNull: true,
+				references: { model: "Users", key: "id" }
+			}
 		},
 		{
 			indexes: [
