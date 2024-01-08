@@ -15,7 +15,7 @@ const Portal = (props: PortalProps) => {
 		setDomReady(true);
 	}, []);
 
-	return domReady && createPortal(children, element);
+	return domReady ? createPortal(children, element) : null;
 };
 
 export default Portal;

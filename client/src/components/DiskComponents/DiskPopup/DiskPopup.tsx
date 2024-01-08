@@ -30,7 +30,6 @@ const DiskPopup = (props: FilesPopupProps) => {
 	if (!isOpen) return null;
 
 	return (
-		// @ts-ignore
 		<Portal>
 			<Popup
 				isOpen={isOpen}

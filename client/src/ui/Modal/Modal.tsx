@@ -66,7 +66,6 @@ const Modal = (props: ModalProps) => {
 	}
 
 	return (
-		// @ts-ignore
 		<Portal>
 			<div className={classNames(cls.Modal, mods, [])}>
 				<div onClick={closeHandler} className={classNames(cls.overlay, {}, [className])}>
