@@ -8,22 +8,15 @@ import {
 	faTrash,
 	faPalette,
 	faGear,
+	faDownload,
 	faCircleInfo,
 	faArrowRightFromBracket
 } from "@fortawesome/pro-light-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
-import {
-	faDownload,
-	faEllipsisVertical,
-	faMagnifyingGlass,
-	faPlus,
-	faLink,
-	faUserPlus
-} from "@fortawesome/pro-regular-svg-icons";
+import { faEllipsisVertical, faMagnifyingGlass, faPlus, faLink, faUserPlus } from "@fortawesome/pro-regular-svg-icons";
 
 export enum IconRegularName {
-	Download = "download",
 	Ellipsis = "ellipsis-vertical",
 	Plus = "plus",
 	UserPlus = "user-plus",
@@ -35,6 +28,7 @@ export enum IconLightName {
 	AddFolder = "folder-plus",
 	Folder = "folder",
 	File = "file",
+	Download = "download",
 	Pen = "pen",
 	Star = "star",
 	Trash = "trash",
@@ -46,7 +40,6 @@ export enum IconLightName {
 }
 
 const iconsRegular = {
-	faDownload,
 	faEllipsisVertical,
 	faPlus,
 	faLink,
@@ -57,6 +50,7 @@ const iconsRegular = {
 };
 
 const iconsLight = {
+	faDownload,
 	faFolderPlus,
 	faFolder,
 	faFile,

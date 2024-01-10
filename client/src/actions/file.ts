@@ -28,6 +28,14 @@ export const getFiles = async (parentId: number | null) => {
 	}
 };
 
+export const deleteFile = async (fileId: number) => {
+	try {
+		return axios.post(`${API_URL}/api/file/deleteFile`, { fileId });
+	} catch (e) {
+		console.log(e);
+	}
+};
+
 export const uploadFile = async (file: File, parentId: number) => {
 	try {
 		const formData = new FormData();

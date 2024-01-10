@@ -7,7 +7,7 @@
 	align-items: center;
 
 	gap: 16px;
-	padding: 5px;
+	padding: 0 5px;
 
 	border-bottom: 1px solid var(--separator);
 
@@ -44,11 +44,23 @@
 
 .menu {
 	height: 100%;
-	width: 30px;
+	width: 110px;
+	gap: 10px;
 
+	display: flex;
+	justify-content: end;
+	align-items: center;
+}
+
+.iconWrapper {
+	border-radius: 50%;
+	height: 44px;
+	width: 44px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
-	cursor: pointer;
+	&:hover {
+		background-color: var(--color_background_content--hover);
+	}
 }

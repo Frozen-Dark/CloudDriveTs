@@ -71,7 +71,7 @@ const Disk = () => {
 								/>
 							))}
 							{files.map((file) => (
-								<FileComponent key={file.id} file={file} />
+								<FileComponent menuClickHandler={handleEllipsesClick} key={file.id} file={file} />
 							))}
 						</div>
 					</DropWrapper>
