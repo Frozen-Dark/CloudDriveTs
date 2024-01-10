@@ -1,29 +1,34 @@
 import cls from "./Profile.module.scss";
-import { FC, HTMLProps, SVGAttributes } from "react";
-
-import ExitIcon from "@assets/profileIcons/exit.svg";
-import FaqIcon from "@assets/profileIcons/faq.svg";
-import SettingsIcon from "@assets/profileIcons/settings.svg";
-import ThemeIcon from "@assets/profileIcons/theme.svg";
+import { FC, HTMLProps } from "react";
 import ProfileAvatar from "@components/Elements/Avatar/Avatar";
 import { NavLink } from "react-router-dom";
 import { RoutePath } from "@config/routeConfig/routeConfig";
 import { logout } from "@actions/user";
+import Icon, { IconSize, IconTheme } from "@ui/Icon/Icon";
+import { IconLightName } from "@lib/icons/icons";
+import Text, { TextSize, TextTheme } from "@ui/Text/Text";
 
 interface ProfileItemProps extends HTMLProps<HTMLDivElement> {
-	Icon: FC<SVGAttributes<SVGElement>>;
+	IconName: IconLightName;
 	text: string;
 	additionText?: string;
 }
 
-const ProfileItem: FC<ProfileItemProps> = ({ Icon, text, additionText, onClick }) => {
+const ProfileItem: FC<ProfileItemProps> = ({ IconName, text, additionText, onClick }) => {
 	return (
 		<div onClick={onClick} className={cls.item}>
 			<div className={cls.icon}>
-				<Icon />
+				<Icon theme={IconTheme.ACCENT} size={IconSize.L} name={IconName} />
 			</div>
-			<p className={cls.text}>{text}</p>
-			{additionText && <p className={cls.additional}>{additionText}</p>}
+			<Text text={text} theme={TextTheme.SAME} textSize={TextSize.M} />
+			{additionText && (
+				<Text
+					style={{ marginLeft: "5px" }}
+					text={additionText}
+					theme={TextTheme.ACCENT}
+					textSize={TextSize.M}
+				/>
+			)}
 		</div>
 	);
 };
@@ -47,11 +52,11 @@ const Profile: FC = () => {
 				</div>
 			</div>
 			<div>
-				<ProfileItem Icon={ThemeIcon} text={"Тема:"} additionText={theme} />
-				<ProfileItem Icon={SettingsIcon} text={"Настройки"} />
-				<ProfileItem Icon={FaqIcon} text={"Помощь"} />
+				<ProfileItem IconName={IconLightName.Palette} text={"Тема:"} additionText={theme} />
+				<ProfileItem IconName={IconLightName.Gear} text={"Настройки"} />
+				<ProfileItem IconName={IconLightName.CircleInfo} text={"Помощь"} />
 				<NavLink to={RoutePath.login}>
-					<ProfileItem onClick={exitHandler} Icon={ExitIcon} text={"Выйти"} />
+					<ProfileItem onClick={exitHandler} IconName={IconLightName.ArrowExit} text={"Выйти"} />
 				</NavLink>
 			</div>
 		</div>

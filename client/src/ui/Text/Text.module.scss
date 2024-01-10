@@ -26,6 +26,15 @@
 	line-height: var(--font-line-xl);
 }
 
+.accent {
+	.title {
+		color: var(--link-color);
+	}
+	.text {
+		color: var(--link-color);
+	}
+}
+
 .same {
 	.title {
 		color: var(--color_text_primary);

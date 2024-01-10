@@ -3,6 +3,7 @@ import LogoIcon from "@assets/icons/logo.svg";
 import { useState } from "react";
 import Profile from "@components/Profile/Profile";
 import Modal from "@ui/Modal/Modal";
+import ProfileAvatar from "@components/Elements/Avatar/Avatar";
 
 const Header = () => {
 	const [isOpenProfile, profileDispatch] = useState(false);
@@ -18,7 +19,7 @@ const Header = () => {
 						<input className={cls.findByName} type="text" placeholder={"Поиск по папке"} />
 					</div>
 					<div onClick={() => profileDispatch(true)} className={cls.profile}>
-						Profile
+						<ProfileAvatar />
 					</div>
 				</div>
 			</div>

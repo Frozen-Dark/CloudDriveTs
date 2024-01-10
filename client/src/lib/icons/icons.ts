@@ -5,7 +5,11 @@ import {
 	faFile,
 	faPen,
 	faFileCircleInfo,
-	faTrash
+	faTrash,
+	faPalette,
+	faGear,
+	faCircleInfo,
+	faArrowRightFromBracket
 } from "@fortawesome/pro-light-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -34,7 +38,11 @@ export enum IconLightName {
 	Pen = "pen",
 	Star = "star",
 	Trash = "trash",
-	FileInfo = "file-circle-info"
+	FileInfo = "file-circle-info",
+	Palette = "palette",
+	Gear = "gear",
+	CircleInfo = "circle-info",
+	ArrowExit = "arrow-right-from-bracket"
 }
 
 const iconsRegular = {
@@ -54,7 +62,11 @@ const iconsLight = {
 	faFile,
 	faStar,
 	faFileCircleInfo,
-	faEllipsisVertical
+	faEllipsisVertical,
+	faPalette,
+	faGear,
+	faCircleInfo,
+	faArrowRightFromBracket
 };
 
 library.add(...Object.values(iconsRegular), ...Object.values(iconsLight));
