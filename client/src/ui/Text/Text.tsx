@@ -4,7 +4,8 @@ import { classNames } from "@lib/classNames/classNames";
 export enum TextTheme {
 	PRIMARY = "primary",
 	SAME = "same",
-	ERROR = "error"
+	ERROR = "error",
+	ACCENT = "accent"
 }
 
 export enum TextSize {
