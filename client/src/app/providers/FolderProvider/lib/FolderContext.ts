@@ -20,6 +20,8 @@ interface FolderContextType {
 	folders: FolderAttributes[];
 	parentFolder: FolderAttributes | null;
 	setFolders: (folders: FolderAttributes[]) => void;
+	addFolder: (folder: FolderAttributes) => void;
+	deleteFolder: (rmFolder: FolderAttributes) => void;
 	clearFolders: () => void;
 	setParentFolder: (folder: FolderAttributes | null) => void;
 	setSortFunction: (sortFunction: SortType) => void;
@@ -30,6 +32,8 @@ export const FolderContext = createContext<FolderContextType>({
 	parentFolder: null,
 	setFolders: () => {},
 	clearFolders: () => {},
+	addFolder: () => {},
+	deleteFolder: () => {},
 	setParentFolder: () => {},
 	setSortFunction: () => {}
 });

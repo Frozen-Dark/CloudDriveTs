@@ -33,6 +33,8 @@ export const useFolder = () => {
 		setFolders,
 		clearFolders,
 		setParentFolder,
+		addFolder,
+		deleteFolder,
 		setSortFunction
 	};
 };

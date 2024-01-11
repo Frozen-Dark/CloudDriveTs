@@ -1,21 +1,36 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useContext } from "react";
 import cls from "./DiskPopup.module.scss";
 import Popup from "@ui/Popup/Popup";
 import Icon, { IconSize, IconTheme, IconWeight } from "@ui/Icon/Icon";
 import { IconLightName, IconRegularName } from "@lib/icons/icons";
 import Text, { TextSize, TextTheme } from "@ui/Text/Text";
 import Portal from "@ui/Portal/Portal";
+import { ItemType } from "@pages/Disk/Disk";
+import { deleteFile } from "@actions/file";
+import { deleteFolder } from "@actions/folder";
+import { FolderAttributes, FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
+import { FileAttributes, FileContext } from "@app/providers/FileProvider/lib/FileContext";
 
 interface FilesPopupProps extends HTMLAttributes<HTMLDivElement> {
-	name: string;
-	iconName: IconLightName | IconRegularName;
 	isOpen: boolean;
 	setIsOpen: (value: boolean) => void;
 	coords: { x: number; y: number };
+	activeItem: ItemType;
 }
 
 const DiskPopup = (props: FilesPopupProps) => {
-	const { name, iconName, isOpen, setIsOpen, coords } = props;
+	const { isOpen, setIsOpen, coords, activeItem } = props;
+
+	const { deleteFolder: removeFolder } = useContext(FolderContext);
+
+	const { deleteFile: removeFile } = useContext(FileContext);
+
+	if (activeItem === null) {
+		return null;
+	}
+
+	const iconName: IconLightName = activeItem.type === "file" ? IconLightName.File : IconLightName.Folder;
+	const name = activeItem.type === "file" ? (activeItem as any).item.fileName : (activeItem as any).item.folderName;
 
 	const createLinkHandler = () => {};
 
@@ -25,7 +40,20 @@ const DiskPopup = (props: FilesPopupProps) => {
 
 	const starHandler = () => {};
 
-	const deleteHandler = () => {};
+	const deleteHandler = async () => {
+		if (activeItem.type === "file") {
+			const response = await deleteFile({ fileId: activeItem.item.id });
+			if (response?.status === 200) {
+				removeFile(activeItem.item as FileAttributes);
+			}
+		} else {
+			const response = await deleteFolder({ folderId: activeItem.item.id });
+			if (response?.status === 200) {
+				removeFolder(activeItem.item as FolderAttributes);
+			}
+		}
+		setIsOpen(false);
+	};
 
 	if (!isOpen) return null;
 

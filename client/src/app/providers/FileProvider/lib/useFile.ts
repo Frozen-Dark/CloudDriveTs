@@ -19,11 +19,16 @@ export const useFile = () => {
 		setFiles([...files, file]);
 	};
 
+	const deleteFile = (rmFile: FileAttributes) => {
+		setFiles(files.filter((file) => file.id !== rmFile.id));
+	};
+
 	return {
 		files,
 		setFiles,
 		clearFiles,
 		addFile,
+		deleteFile,
 		setSortFunction
 	};
 };

@@ -20,6 +20,7 @@ interface FileContextType {
 	files: FileAttributes[];
 	setFiles: (files: FileAttributes[]) => void;
 	clearFiles: () => void;
+	deleteFile: (file: FileAttributes) => void;
 	addFile: (file: FileAttributes) => void;
 	setSortFunction: (sortFunction: SortType) => void;
 }
@@ -29,5 +30,6 @@ export const FileContext = createContext<FileContextType>({
 	addFile: () => {},
 	setFiles: () => {},
 	clearFiles: () => {},
+	deleteFile: () => {},
 	setSortFunction: () => {}
 });

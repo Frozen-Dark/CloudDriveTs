@@ -1,24 +1,41 @@
 import cls from "./General.module.scss";
-import { FileAttributes } from "@app/providers/FileProvider/lib/FileContext";
+import { FileAttributes, FileContext } from "@app/providers/FileProvider/lib/FileContext";
 import Icon, { IconSize, IconWeight } from "@ui/Icon/Icon";
 import { IconLightName, IconRegularName } from "@lib/icons/icons";
-import { MouseEvent } from "react";
+import { MouseEvent, useContext } from "react";
+import { classNames } from "@lib/classNames/classNames";
+import classes from "@components/DiskComponents/General.module.scss";
 
 interface FileProps {
-	menuClickHandler: (e: MouseEvent) => void;
+	menuClick: (e: MouseEvent, file: FileAttributes) => void;
 	file: FileAttributes;
+	fileClick: (file: FileAttributes) => void;
+	isActive: boolean;
 }
 
-const File = ({ file, menuClickHandler }: FileProps) => {
+const File = ({ file, menuClick, fileClick, isActive }: FileProps) => {
 	const { fileName, extension, size, updatedAt } = file;
+
 	const filterExtension = extension.replace(".", "");
 
 	const modifiedDate = updatedAt.split("T")[0];
 	const kiloByte = Math.floor(size / 1024);
 	const parsedSize = kiloByte > 1023 ? String((kiloByte / 1024).toFixed(2)) + " Мб" : String(kiloByte) + " Кб";
 
+	const doubleClickHandler = async () => {};
+
+	const fileClickHandler = () => {
+		fileClick(file);
+	};
+
+	const downloadClickHandler = () => {};
+
 	return (
-		<div className={cls.item}>
+		<div
+			onDoubleClick={doubleClickHandler}
+			onClick={fileClickHandler}
+			className={classNames(classes.item, { [cls.itemActive]: isActive })}
+		>
 			<div className={cls.icon} style={{ opacity: "1" }}>
 				<Icon name={IconLightName.File} weight={IconWeight.Light} size={IconSize.L} />
 			</div>
@@ -31,12 +48,12 @@ const File = ({ file, menuClickHandler }: FileProps) => {
 					<Icon name={IconLightName.Download} size={IconSize.M} className={cls.icon} />
 				</div>
 
-				<div onClick={menuClickHandler} className={cls.iconWrapper}>
+				<div onClick={(e) => menuClick(e, file)} className={cls.iconWrapper}>
 					<Icon
 						name={IconRegularName.Ellipsis}
 						weight={IconWeight.Regular}
 						className={cls.icon}
-						size={IconSize.L}
+						size={IconSize.M}
 					/>
 				</div>
 			</div>
