@@ -14,9 +14,9 @@ class FileController {
 				return next(ApiError.badRequest("id файла или папки не найдены"));
 			}
 
-			await FileService.move({ userId: user.id, parentId, fileId });
+			const file = await FileService.move({ userId: user.id, parentId, fileId });
 
-			return res.json({ message: "Файл успешно перемещен" });
+			return res.json({ message: "Файл успешно перемещен", file });
 		} catch (e) {
 			next(e);
 		}
@@ -31,12 +31,14 @@ class FileController {
 				return next(ApiError.badRequest("Не указан id"));
 			}
 
-			const parentFolder =
-				parentId === null
-					? await FolderService.getRootFolder({ userId })
-					: await FolderService.getById({ userId, id: parentId });
+			let parentFolder;
 
-			parentId = parentId === null ? parentFolder.dataValues.id : parentId;
+			if (parentId === null) {
+				parentFolder = await FolderService.getRootFolder({ userId });
+				parentId = parentFolder.dataValues.id;
+			} else {
+				parentFolder = await FolderService.getById({ userId, id: parentId });
+			}
 
 			const folders = await FolderService.getFoldersByParentId({ userId, parentId });
 			const files = await FileService.getFilesByParentId({ userId, parentId });

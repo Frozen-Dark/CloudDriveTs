@@ -55,6 +55,8 @@ class FileService {
 			await oldParentFolder.update({ filesId: filesIdWithoutFileId }),
 			await newParentFolder.update({ filesId: filesIdWithNewFileId })
 		]);
+
+		return file;
 	}
 
 	async delete({ userId, fileId, mino }: { userId: number; fileId: number; mino: Client }) {
