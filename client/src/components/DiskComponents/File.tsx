@@ -1,10 +1,11 @@
 import cls from "./General.module.scss";
-import { FileAttributes, FileContext } from "@app/providers/FileProvider/lib/FileContext";
+import { FileAttributes } from "@app/providers/FileProvider/lib/FileContext";
 import Icon, { IconSize, IconWeight } from "@ui/Icon/Icon";
 import { IconLightName, IconRegularName } from "@lib/icons/icons";
-import { MouseEvent, useContext } from "react";
+import { MouseEvent } from "react";
 import { classNames } from "@lib/classNames/classNames";
 import classes from "@components/DiskComponents/General.module.scss";
+import { downloadFile } from "@actions/file";
 
 interface FileProps {
 	menuClick: (e: MouseEvent, file: FileAttributes) => void;
@@ -28,7 +29,10 @@ const File = ({ file, menuClick, fileClick, isActive }: FileProps) => {
 		fileClick(file);
 	};
 
-	const downloadClickHandler = () => {};
+	const downloadClickHandler = async (e: MouseEvent) => {
+		e.preventDefault();
+		await downloadFile({ file });
+	};
 
 	return (
 		<div
@@ -44,7 +48,7 @@ const File = ({ file, menuClick, fileClick, isActive }: FileProps) => {
 			<div className={cls.size}>{parsedSize}</div>
 			<div className={cls.modified__date}>{modifiedDate}</div>
 			<div className={cls.menu}>
-				<div className={cls.iconWrapper}>
+				<div onClick={downloadClickHandler} className={cls.iconWrapper}>
 					<Icon name={IconLightName.Download} size={IconSize.M} className={cls.icon} />
 				</div>
 

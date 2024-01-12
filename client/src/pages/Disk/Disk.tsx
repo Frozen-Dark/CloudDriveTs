@@ -71,6 +71,10 @@ const Disk = () => {
 	};
 
 	useEffect(() => {
+		clearActiveItems();
+	}, [folders, files]);
+
+	useEffect(() => {
 		const parentId = Number(localStorage.getItem("parentId")) || null;
 		void openFolder(parentId);
 	}, []);

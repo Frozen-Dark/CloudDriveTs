@@ -4,6 +4,7 @@ import fileUpload from "express-fileupload";
 const router = Router();
 
 router.post("/upload", fileUpload({}), fileController.upload);
+router.post("/download", fileController.download);
 router.post("/delete", fileController.delete);
 router.put("/rename", fileController.rename);
 router.put("/move", fileController.move);

@@ -96,6 +96,30 @@ class FileController {
 			next(e);
 		}
 	}
+
+	async download(req: Request, res: Response, next: NextFunction) {
+		try {
+			const fileId = req.body.fileId;
+
+			const { fileStream, fileName } = await FileService.download({
+				mino: req.minioClient,
+				userId: req.user.id,
+				fileId
+			});
+
+			const encodedFileName = encodeURIComponent(fileName);
+
+			res.setHeader("Content-Disposition", `attachment; filename=${encodedFileName}`);
+
+			fileStream.on("error", (err) => {
+				next(err);
+			});
+
+			fileStream.pipe(res);
+		} catch (e) {
+			next(e);
+		}
+	}
 }
 
 export default new FileController();

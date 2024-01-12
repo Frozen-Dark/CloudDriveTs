@@ -31,6 +31,12 @@ class MinoService {
 		}
 	}
 
+	downloadFile({ mino, fileId, userId }: { mino: Client; fileId: number; userId: number }) {
+		const { bucketName, filePath } = this.getNameAndPath({ userId, fileId });
+
+		return mino.getObject(bucketName, filePath);
+	}
+
 	async deleteFile({ userId, fileId, mino }: { userId: number; fileId: number; mino: Client }) {
 		const { bucketName, filePath } = this.getNameAndPath({ userId, fileId });
 

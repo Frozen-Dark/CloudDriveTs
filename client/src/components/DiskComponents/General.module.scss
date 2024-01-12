@@ -6,13 +6,13 @@
 	grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
 	align-items: center;
 
-	gap: 0px;
+	gap: 0;
 	padding: 0 5px;
 
 	border-bottom: 1px solid var(--separator);
 
 	&:hover {
-		background-color: var(--color_background_content--hover);
+		background-color: var(--color_text_primary_invariably--hover);
 
 		.icon {
 			opacity: 1;
@@ -21,7 +21,10 @@
 }
 
 .itemActive {
-	background-color: var(--color_backgroud_ui_accent--active)!important;
+	background-color: var(--color_backgroud_ui_accent--active);
+	&:hover {
+		background-color: var(--color_backgroud_ui_accent--active);
+	}
 }
 
 .icon {
@@ -66,6 +69,6 @@
 	align-items: center;
 
 	&:hover {
-		background-color: var(--color_background_content--hover);
+		background-color: var(--color_background_secondary--hover);
 	}
 }
