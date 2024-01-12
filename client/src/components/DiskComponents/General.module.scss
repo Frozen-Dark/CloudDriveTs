@@ -6,7 +6,6 @@
 	grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
 	align-items: center;
 
-	gap: 0;
 	padding: 0 5px;
 
 	border-bottom: 1px solid var(--separator);
@@ -22,6 +21,7 @@
 
 .itemActive {
 	background-color: var(--color_backgroud_ui_accent--active);
+
 	&:hover {
 		background-color: var(--color_backgroud_ui_accent--active);
 	}
@@ -29,13 +29,13 @@
 
 .icon {
 	height: 100%;
-	opacity: 0;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: var(--text_primary);
 
+	opacity: 0;
 	cursor: pointer;
 }
 
