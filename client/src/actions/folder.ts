@@ -11,14 +11,15 @@ type MoveFolder = { message: string; folder: FolderAttributes };
 axios.interceptors.request.use((config) => {
 	const token = User.token;
 	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
+		config.headers.Authorization = "Bearer " + token;
 	}
 	return config;
 });
 
 export async function createFolder(props: { parentId: number | null; folderName: string }) {
 	try {
-		return axios.post<CreateFolder>(`${API_URL}/api/folder/create`, props);
+		const response = await axios.post<CreateFolder>(`${API_URL}/api/folder/create`, props);
+		return response;
 	} catch (e) {
 		console.log(e);
 	}
@@ -26,7 +27,8 @@ export async function createFolder(props: { parentId: number | null; folderName:
 
 export async function renameFolder(props: { folderId: number | null; folderName: string }) {
 	try {
-		return axios.put<RenameFolder>(`${API_URL}/api/folder/rename`, props);
+		const response = await axios.put<RenameFolder>(`${API_URL}/api/folder/rename`, props);
+		return response;
 	} catch (e) {
 		console.log(e);
 	}
@@ -34,7 +36,8 @@ export async function renameFolder(props: { folderId: number | null; folderName:
 
 export async function deleteFolder(props: { folderId: number }) {
 	try {
-		return axios.post<DeleteFolder>(`${API_URL}/api/folder/delete`, props);
+		const response = await axios.post<DeleteFolder>(`${API_URL}/api/folder/delete`, props);
+		return response;
 	} catch (e) {
 		console.log(e);
 	}

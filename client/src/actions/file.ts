@@ -18,14 +18,15 @@ type MoveFile = { message: string; file: FileAttributes };
 axios.interceptors.request.use((config) => {
 	const token = User.token;
 	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
+		config.headers.Authorization = "Bearer " + token;
 	}
 	return config;
 });
 
 export const getFiles = async (parentId: number | null) => {
 	try {
-		return axios.post<GetFiles>(`${API_URL}/api/file/getFilesByFolderId`, { parentId });
+		const response = await axios.post<GetFiles>(`${API_URL}/api/file/getFilesByFolderId`, { parentId });
+		return response;
 	} catch (e) {
 		console.log(e);
 	}
@@ -33,7 +34,8 @@ export const getFiles = async (parentId: number | null) => {
 
 export const deleteFile = async ({ fileId }: { fileId: number }) => {
 	try {
-		return axios.post<DeleteFile>(`${API_URL}/api/file/delete`, { fileId });
+		const response = await axios.post<DeleteFile>(`${API_URL}/api/file/delete`, { fileId });
+		return response;
 	} catch (e) {
 		console.log(e);
 	}
@@ -41,7 +43,8 @@ export const deleteFile = async ({ fileId }: { fileId: number }) => {
 
 export const renameFile = async (fileName: string) => {
 	try {
-		return axios.put<RenameFile>(`${API_URL}/api/file/rename`, { fileName });
+		const response = await axios.put<RenameFile>(`${API_URL}/api/file/rename`, { fileName });
+		return response;
 	} catch (e) {
 		console.log(e);
 	}
@@ -49,7 +52,8 @@ export const renameFile = async (fileName: string) => {
 
 export const moveFile = async (props: { fileId: number; parentId: number | null }) => {
 	try {
-		return axios.put<MoveFile>(`${API_URL}/api/file/move`, props);
+		const response = await axios.put<MoveFile>(`${API_URL}/api/file/move`, props);
+		return response;
 	} catch (e) {
 		console.log(e);
 	}

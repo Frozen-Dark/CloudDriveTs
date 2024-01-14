@@ -47,7 +47,6 @@ export const login = async ({ email, password }: { email: string; password: stri
 			password
 		});
 
-		console.log(response);
 		if (response.status === 200) {
 			const { user, tokens } = response.data;
 

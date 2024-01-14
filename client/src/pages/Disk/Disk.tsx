@@ -10,7 +10,7 @@ import { FolderAttributes, FolderContext } from "@app/providers/FolderProvider/l
 import { getFiles } from "@actions/file";
 import { FileAttributes, FileContext } from "@app/providers/FileProvider/lib/FileContext";
 import DiskPopup from "@components/DiskComponents/DiskPopup/DiskPopup";
-import { useMousePosition } from "@hooks/hooks";
+import { useKeydownListener, useMousePosition } from "@hooks/hooks";
 
 const toggleItem = <T extends { id: number }>(items: T[], item: T): T[] => {
 	if (items.some((i) => i.id === item.id)) {
@@ -47,10 +47,12 @@ const Disk = () => {
 	const ellipsesClickHandler = (e: React.MouseEvent, item: FileAttributes | FolderAttributes) => {
 		handleEllipsesClick(e);
 		e.stopPropagation();
-		const type = (item as any)?.fileName ? "file" : "folder";
+		const type = "fileName" in item ? "file" : "folder";
 		setActiveItem({ item, type });
 		clearActiveItems();
 	};
+
+	useKeydownListener(["Control"], (e) => {});
 
 	const folderClickHandler = (folder: FolderAttributes) => {
 		setActiveFolders((prevFolders) => toggleItem(prevFolders, folder));
