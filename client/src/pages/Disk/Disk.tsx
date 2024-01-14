@@ -6,21 +6,61 @@ import DropWrapper from "@components/DiskComponents/dndWrapper/dndWrapper";
 import Header from "@components/Header/Header";
 import CreateFolder from "@components/CreateFolder/CreateFolder";
 import { classNames } from "@lib/classNames/classNames";
-import { FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
+import { FolderAttributes, FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
 import { getFiles } from "@actions/file";
-import { FileContext } from "@app/providers/FileProvider/lib/FileContext";
+import { FileAttributes, FileContext } from "@app/providers/FileProvider/lib/FileContext";
 import DiskPopup from "@components/DiskComponents/DiskPopup/DiskPopup";
-import { IconLightName } from "@lib/icons/icons";
-import { useMousePosition } from "@hooks/hooks";
+import { useKeydownListener, useMousePosition } from "@hooks/hooks";
+
+const toggleItem = <T extends { id: number }>(items: T[], item: T): T[] => {
+	if (items.some((i) => i.id === item.id)) {
+		return items.filter((i) => i.id !== item.id);
+	} else {
+		return [...items, item];
+	}
+};
+
+export type ItemType = {
+	item: FileAttributes | FolderAttributes;
+	type: "folder" | "file";
+} | null;
 
 const Disk = () => {
 	const [addClasses, setAddClasses] = useState("");
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-	const { coords, handleEllipsesClick } = useMousePosition(() => setIsPopupOpen(true));
-
 	const { folders, setFolders, setParentFolder } = useContext(FolderContext);
 	const { files, setFiles } = useContext(FileContext);
+
+	const [activeFolders, setActiveFolders] = useState<FolderAttributes[]>([]);
+	const [activeFiles, setActiveFiles] = useState<FileAttributes[]>([]);
+
+	const [activeItem, setActiveItem] = useState<ItemType>(null);
+
+	const { coords, handleEllipsesClick } = useMousePosition(() => setIsPopupOpen(true));
+
+	const clearActiveItems = () => {
+		setActiveFolders([]);
+		setActiveFiles([]);
+	};
+
+	const ellipsesClickHandler = (e: React.MouseEvent, item: FileAttributes | FolderAttributes) => {
+		handleEllipsesClick(e);
+		e.stopPropagation();
+		const type = "fileName" in item ? "file" : "folder";
+		setActiveItem({ item, type });
+		clearActiveItems();
+	};
+
+	useKeydownListener(["Control"], (e) => {});
+
+	const folderClickHandler = (folder: FolderAttributes) => {
+		setActiveFolders((prevFolders) => toggleItem(prevFolders, folder));
+	};
+
+	const fileClickHandler = (file: FileAttributes) => {
+		setActiveFiles((prevFiles) => toggleItem(prevFiles, file));
+	};
 
 	const openFolder = async (id: number | null) => {
 		const response = await getFiles(id);
@@ -31,6 +71,10 @@ const Disk = () => {
 			setFiles(files);
 		}
 	};
+
+	useEffect(() => {
+		clearActiveItems();
+	}, [folders, files]);
 
 	useEffect(() => {
 		const parentId = Number(localStorage.getItem("parentId")) || null;
@@ -67,23 +111,25 @@ const Disk = () => {
 									key={fld.id}
 									folder={fld}
 									getFolders={openFolder}
-									menuClickHandler={handleEllipsesClick}
+									folderClick={folderClickHandler}
+									menuClick={ellipsesClickHandler}
+									isActive={activeFolders.some((activeFolder) => activeFolder.id === fld.id)}
 								/>
 							))}
 							{files.map((file) => (
-								<FileComponent key={file.id} file={file} />
+								<FileComponent
+									key={file.id}
+									file={file}
+									fileClick={fileClickHandler}
+									menuClick={ellipsesClickHandler}
+									isActive={activeFiles.some((activeFile) => activeFile.id === file.id)}
+								/>
 							))}
 						</div>
 					</DropWrapper>
 				</div>
 			</div>
-			<DiskPopup
-				iconName={IconLightName.Folder}
-				name={"Test"}
-				isOpen={isPopupOpen}
-				setIsOpen={setIsPopupOpen}
-				coords={coords}
-			/>
+			<DiskPopup activeItem={activeItem} isOpen={isPopupOpen} setIsOpen={setIsPopupOpen} coords={coords} />
 		</>
 	);
 };

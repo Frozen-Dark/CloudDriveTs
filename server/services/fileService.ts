@@ -6,6 +6,8 @@ import { UploadedFile } from "express-fileupload";
 import path from "path";
 import UserService from "@services/userService";
 import ApiError from "@error/ApiError";
+import userService from "@services/userService";
+import { Readable as ReadableStream } from "node:stream";
 
 class FileService {
 	async getById({ userId, id }: { userId: number; id: number }) {
@@ -55,6 +57,8 @@ class FileService {
 			await oldParentFolder.update({ filesId: filesIdWithoutFileId }),
 			await newParentFolder.update({ filesId: filesIdWithNewFileId })
 		]);
+
+		return file;
 	}
 
 	async delete({ userId, fileId, mino }: { userId: number; fileId: number; mino: Client }) {
@@ -90,6 +94,15 @@ class FileService {
 		await MinoService.uploadFile({ parentFolder, fileId: file.dataValues.id, mino, userId, data });
 
 		return file;
+	}
+
+	async download(props: { mino: Client; userId: number; fileId: number }) {
+		const { mino, userId, fileId } = props;
+		const file = await this.getById({ id: fileId, userId });
+
+		const fileStream = await MinoService.downloadFile({ fileId: file.dataValues.id, userId, mino });
+
+		return { fileStream, fileName: file.dataValues.fileName };
 	}
 }
 

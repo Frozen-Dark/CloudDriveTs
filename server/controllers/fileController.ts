@@ -14,9 +14,9 @@ class FileController {
 				return next(ApiError.badRequest("id файла или папки не найдены"));
 			}
 
-			await FileService.move({ userId: user.id, parentId, fileId });
+			const file = await FileService.move({ userId: user.id, parentId, fileId });
 
-			return res.json({ message: "Файл успешно перемещен" });
+			return res.json({ message: "Файл успешно перемещен", file });
 		} catch (e) {
 			next(e);
 		}
@@ -31,12 +31,14 @@ class FileController {
 				return next(ApiError.badRequest("Не указан id"));
 			}
 
-			const parentFolder =
-				parentId === null
-					? await FolderService.getRootFolder({ userId })
-					: await FolderService.getById({ userId, id: parentId });
+			let parentFolder;
 
-			parentId = parentId === null ? parentFolder.dataValues.id : parentId;
+			if (parentId === null) {
+				parentFolder = await FolderService.getRootFolder({ userId });
+				parentId = parentFolder.dataValues.id;
+			} else {
+				parentFolder = await FolderService.getById({ userId, id: parentId });
+			}
 
 			const folders = await FolderService.getFoldersByParentId({ userId, parentId });
 			const files = await FileService.getFilesByParentId({ userId, parentId });
@@ -90,6 +92,30 @@ class FileController {
 			const file = await FileService.upload({ uploadFile, mino: req.minioClient, userId: req.user.id, parentId });
 
 			return res.json({ file });
+		} catch (e) {
+			next(e);
+		}
+	}
+
+	async download(req: Request, res: Response, next: NextFunction) {
+		try {
+			const fileId = req.body.fileId;
+
+			const { fileStream, fileName } = await FileService.download({
+				mino: req.minioClient,
+				userId: req.user.id,
+				fileId
+			});
+
+			const encodedFileName = encodeURIComponent(fileName);
+
+			res.setHeader("Content-Disposition", `attachment; filename=${encodedFileName}`);
+
+			fileStream.on("error", (err) => {
+				next(err);
+			});
+
+			fileStream.pipe(res);
 		} catch (e) {
 			next(e);
 		}

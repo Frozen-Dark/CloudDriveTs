@@ -35,10 +35,12 @@
 	--color_background_content: #353535;
 	--color_background_content--hover: #414141;
 	--color_background_secondary: #333333;
+	--color_background_secondary--hover: rgba(255, 255, 255, .1);
 	--color_background_tertiary: #313131;
 	--color_backgroud_ui: #e1e3e6;
 	--color_backgroud_ui--hover: #ffffff;
 	--color_backgroud_ui_accent: #18a0fb;
+	--color_backgroud_ui_accent--active: rgba(24, 160, 251, .3);
 	--separator: #414141;
 	--separator_inverse: #dce1e6;
 	--main_border: 1px solid var(--separator);
@@ -74,7 +76,9 @@
 [data-theme="light"] {
 	--color_background: #f6f6f6;
 	--color_background_content: #f2f2f2;
+	--color_background_content--hover: #414141;
 	--color_background_secondary: #efefef;
+	--color_background_secondary--hover: rgba(0, 0, 0, .1);
 	--color_background_tertiary: #e9e9e9;
 	--separator: #d1d1d1;
 	--separator_inverse: #414141;
@@ -82,6 +86,8 @@
 	--color_backgroud_ui: #e1e3e6;
 	--color_backgroud_ui--hover: #ffffff;
 	--color_backgroud_ui_accent: #71aaeb;
+	--color_backgroud_ui_accent--active: rgba(113, 170, 235, .6);
+
 	--color_background_contrast--hover: #333;
 	--color_background_contrast--active: #2a2a2a;
 	--color_background_modal: #ffffff;

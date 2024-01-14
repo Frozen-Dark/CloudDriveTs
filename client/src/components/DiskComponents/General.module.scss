@@ -6,13 +6,12 @@
 	grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
 	align-items: center;
 
-	gap: 16px;
-	padding: 5px;
+	padding: 0 5px;
 
 	border-bottom: 1px solid var(--separator);
 
 	&:hover {
-		background-color: var(--color_background_content);
+		background-color: var(--color_text_primary_invariably--hover);
 
 		.icon {
 			opacity: 1;
@@ -20,15 +19,23 @@
 	}
 }
 
+.itemActive {
+	background-color: var(--color_backgroud_ui_accent--active);
+
+	&:hover {
+		background-color: var(--color_backgroud_ui_accent--active);
+	}
+}
+
 .icon {
 	height: 100%;
-	opacity: 0;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: var(--text_primary);
 
+	opacity: 0;
 	cursor: pointer;
 }
 
@@ -36,6 +43,7 @@
 .type,
 .size,
 .modified__date {
+	padding-left: 16px;
 	font-size: var(--font-size-m);
 	white-space: nowrap;
 	overflow: hidden;
@@ -44,11 +52,23 @@
 
 .menu {
 	height: 100%;
-	width: 30px;
+	width: 110px;
+	gap: 10px;
 
+	display: flex;
+	justify-content: end;
+	align-items: center;
+}
+
+.iconWrapper {
+	border-radius: 50%;
+	height: 40px;
+	width: 40px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
-	cursor: pointer;
+	&:hover {
+		background-color: var(--color_background_secondary--hover);
+	}
 }

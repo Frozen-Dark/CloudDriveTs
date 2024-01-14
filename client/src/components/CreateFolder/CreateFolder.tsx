@@ -5,7 +5,7 @@ import Text from "@ui/Text/Text";
 import Input from "@ui/Input/Input";
 import Button, { ButtonSize, ButtonTheme } from "@ui/Button/Button";
 import Modal from "@ui/Modal/Modal";
-import { createFolder } from "@actions/file";
+import { createFolder } from "@actions/folder";
 import { observer } from "mobx-react";
 import { FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
 import Icon, { IconSize } from "@ui/Icon/Icon";
