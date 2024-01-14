@@ -50,6 +50,21 @@ class folderController {
 		}
 	}
 
+	async getFoldersToRootFolder(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { parentId } = req.body;
+			if (!parentId) {
+				return next(ApiError.notFound("id папки не указан"));
+			}
+
+			const folders = await FolderService.getFolderPath({ parentId, userId: req.user.id });
+
+			return res.json({ folders });
+		} catch (e) {
+			next(e);
+		}
+	}
+
 	async move(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { folderId } = req.body;

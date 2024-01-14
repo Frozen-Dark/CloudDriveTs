@@ -11,6 +11,8 @@ import { getFiles } from "@actions/file";
 import { FileAttributes, FileContext } from "@app/providers/FileProvider/lib/FileContext";
 import DiskPopup from "@components/DiskComponents/DiskPopup/DiskPopup";
 import { useKeydownListener, useMousePosition } from "@hooks/hooks";
+import { FolderNavigationFunctions } from "@app/providers/FolderNavigatonProvider/lib/FolderNavigationContext";
+import { getFoldersToRootFolder } from "@actions/folder";
 
 const toggleItem = <T extends { id: number }>(items: T[], item: T): T[] => {
 	if (items.some((i) => i.id === item.id)) {
@@ -29,6 +31,7 @@ const Disk = () => {
 	const [addClasses, setAddClasses] = useState("");
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+	const { addFolder, deleteFolder, clearNavigation, initNavigationFolders } = useContext(FolderNavigationFunctions);
 	const { folders, setFolders, setParentFolder } = useContext(FolderContext);
 	const { files, setFiles } = useContext(FileContext);
 
@@ -69,7 +72,30 @@ const Disk = () => {
 			setParentFolder(parentFolder);
 			setFolders(folders);
 			setFiles(files);
+			addFolder(parentFolder);
+			if (id) localStorage.setItem("parentId", String(id));
 		}
+	};
+
+	const initFolders = async (id: number | null) => {
+		const response = await getFiles(id);
+		if (response?.status === 200) {
+			const { folders, parentFolder, files } = response.data;
+			setParentFolder(parentFolder);
+			setFolders(folders);
+			setFiles(files);
+		}
+		if (id) {
+			const response = await getFoldersToRootFolder({ parentId: id });
+			if (response?.status === 200) {
+				initNavigationFolders(response.data.folders);
+			}
+		}
+	};
+
+	const getRootFolder = async () => {
+		void openFolder(null);
+		clearNavigation();
 	};
 
 	useEffect(() => {
@@ -78,7 +104,7 @@ const Disk = () => {
 
 	useEffect(() => {
 		const parentId = Number(localStorage.getItem("parentId")) || null;
-		void openFolder(parentId);
+		void initFolders(parentId);
 	}, []);
 
 	return (
@@ -88,7 +114,7 @@ const Disk = () => {
 				<div className={classNames(cls.file__container, { [addClasses]: !!addClasses })}>
 					<DropWrapper setAddClasses={setAddClasses}>
 						<div className={cls.header}>
-							<div className={cls.myDisk} onClick={() => openFolder(null)}>
+							<div className={cls.myDisk} onClick={getRootFolder}>
 								{"Мой диск"}
 							</div>
 							<CreateFolder />

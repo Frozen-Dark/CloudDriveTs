@@ -7,6 +7,7 @@ import FolderProvider from "./app/providers/FolderProvider/ui/FolderProvider";
 import FileProvider from "@app/providers/FileProvider/ui/FileProvider";
 import "./styles/App.module.scss";
 import "@lib/icons/icons";
+import FolderNavigation from "@app/providers/FolderNavigatonProvider/ui/FolderNavigationProvider";
 
 function App() {
 	useEffect(() => {
@@ -18,7 +19,9 @@ function App() {
 			<WallpaperContainer>
 				<FolderProvider>
 					<FileProvider>
-						<Router />
+						<FolderNavigation>
+							<Router />
+						</FolderNavigation>
 					</FileProvider>
 				</FolderProvider>
 			</WallpaperContainer>

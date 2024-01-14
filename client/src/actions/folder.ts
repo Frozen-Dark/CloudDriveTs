@@ -25,6 +25,18 @@ export async function createFolder(props: { parentId: number | null; folderName:
 	}
 }
 
+export async function getFoldersToRootFolder(props: { parentId: number }) {
+	try {
+		const response = await axios.post<{ folders: FolderAttributes[] }>(
+			`${API_URL}/api/folder/getFoldersToRootFolder`,
+			props
+		);
+		return response;
+	} catch (e) {
+		console.log(e);
+	}
+}
+
 export async function renameFolder(props: { folderId: number | null; folderName: string }) {
 	try {
 		const response = await axios.put<RenameFolder>(`${API_URL}/api/folder/rename`, props);
