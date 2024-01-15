@@ -12,19 +12,26 @@
 	background: none;
 
 	transition: var(--main-anim-delay) ease;
-}
 
-.outline:hover {
-	color: #fff;
+	&:hover {
+		color: #fff;
+	}
 }
 
 .background {
 	border: 1px solid var(--separator);
 	background: var(--color_background);
 
-	:hover {
-		color: #ffffff;
+	&:hover {
+		color: #fff;
 	}
+}
+
+.transparent {
+	outline: none;
+	border: none;
+	background-color: transparent;
+	padding: 0;
 }
 
 .backgroundAzure {
@@ -34,29 +41,31 @@
 	color: var(--ui-text-color);
 	background-color: var(--button-color);
 	transition: var(--main-anim-delay) ease;
-}
 
-.backgroundAzure:hover {
-	filter: brightness(95%);
-}
+	&:hover {
+		filter: brightness(95%);
+	}
 
-.backgroundAzure:active {
-	background-color: var(--button-active-color);
-}
+	&:active {
+		background-color: var(--button-active-color);
+	}
 
-.backgroundAzure:disabled {
-	filter: brightness(70%);
-	cursor: not-allowed;
+	&:disabled {
+		filter: brightness(70%);
+		cursor: not-allowed;
+	}
 }
 
 .backgroundPrimary {
+	outline: none;
 	border: 1px solid var(--separator);
-	background: var(--color_background);
+	background-color: var(--color_background);
 	color: var(--button-color);
 }
 
 .backgroundInverted {
-	background: var(--inverted-bg-color);
+	outline: none;
+	background-color: var(--inverted-bg-color);
 	color: var(--inverted-primary-color);
 	border: none;
 }
@@ -64,12 +73,13 @@
 .disabled {
 	color: gray;
 	border-color: gray;
+	pointer-events: none;
 }
 
 .size_s {
-	font-size: var(--font-line-s);
+	font-size: var(--font-size-m);
 }
 
 .size_m {
-	font-size: var(--font-line-m);
+	font-size: var(--font-size-l);
 }

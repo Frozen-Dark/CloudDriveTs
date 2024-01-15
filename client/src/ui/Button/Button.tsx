@@ -5,6 +5,7 @@ import cls from "./Button.module.scss";
 
 export enum ButtonTheme {
 	OUTLINE = "outline",
+	TRANSPARENT = "transparent",
 	BACKGROUND = "background",
 	BACKGROUND_PRIMARY = "backgroundPrimary",
 	BACKGROUND_AZURE = "backgroundAzure"

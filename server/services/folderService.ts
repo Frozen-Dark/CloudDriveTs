@@ -37,6 +37,26 @@ class FolderService {
 		return folder;
 	}
 
+	async getFolderPath({ userId, parentId }: { userId: number; parentId: number | null }) {
+		const stack: Array<FolderAttributes> = [];
+
+		const getFolder = async (id: number) => await this.getById({ userId, id });
+
+		const findFolder = async (currentId: number | null) => {
+			if (!currentId) {
+				return;
+			}
+
+			const folder = await this.getById({ id: currentId, userId });
+			stack.push(folder.dataValues);
+
+			await findFolder(folder.dataValues.parentId);
+		};
+
+		await findFolder(parentId);
+		return stack.reverse();
+	}
+
 	async getFoldersByParentId({ userId, parentId }: { userId: number; parentId: number | null }) {
 		if (!userId || !parentId) {
 			throw ApiError.notFound("Некорректные данные для получения папок");
@@ -49,6 +69,7 @@ class FolderService {
 
 		return folders;
 	}
+
 	async createDir(props: CreateDir) {
 		const { userId, folderName, parentId } = props;
 
