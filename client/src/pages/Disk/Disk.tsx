@@ -11,8 +11,9 @@ import { getFiles } from "@actions/file";
 import { FileAttributes, FileContext } from "@app/providers/FileProvider/lib/FileContext";
 import DiskPopup from "@components/DiskComponents/DiskPopup/DiskPopup";
 import { useKeydownListener, useMousePosition } from "@hooks/hooks";
-import { FolderNavigationFunctions } from "@app/providers/FolderNavigatonProvider/lib/FolderNavigationContext";
 import { getFoldersToRootFolder } from "@actions/folder";
+import TopNavigation from "@components/DiskComponents/TopNavigation/TopNavigation";
+import { FolderNavigation } from "@app/providers/FolderNavigatonProvider/lib/FolderNavigationContext";
 
 const toggleItem = <T extends { id: number }>(items: T[], item: T): T[] => {
 	if (items.some((i) => i.id === item.id)) {
@@ -31,7 +32,7 @@ const Disk = () => {
 	const [addClasses, setAddClasses] = useState("");
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-	const { addFolder, deleteFolder, clearNavigation, initNavigationFolders } = useContext(FolderNavigationFunctions);
+	const { addFolder, deleteFolder, clearNavigation, initNavigationFolders } = useContext(FolderNavigation);
 	const { folders, setFolders, setParentFolder } = useContext(FolderContext);
 	const { files, setFiles } = useContext(FileContext);
 
@@ -114,9 +115,7 @@ const Disk = () => {
 				<div className={classNames(cls.file__container, { [addClasses]: !!addClasses })}>
 					<DropWrapper setAddClasses={setAddClasses}>
 						<div className={cls.header}>
-							<div className={cls.myDisk} onClick={getRootFolder}>
-								{"Мой диск"}
-							</div>
+							<TopNavigation openFolder={openFolder} />
 							<CreateFolder />
 						</div>
 

@@ -3,10 +3,19 @@ import { FolderAttributes } from "@app/providers/FolderProvider/lib/FolderContex
 
 export const useFolderNavigation = () => {
 	const [stack, dispatchStack] = useState<FolderAttributes[]>([]);
-	const [rootFolder, setRootFolder] = useState<FolderAttributes>();
+	const [rootFolder, setRootFolder] = useState<FolderAttributes | null>(null);
 
-	const addFolder = (folder: FolderAttributes) => {
-		dispatchStack([...stack, folder]);
+	const addFolder = (newFolder: FolderAttributes) => {
+		if (!newFolder.parentId) {
+			clearNavigation();
+			return;
+		}
+
+		if (stack.some((folder) => folder.id === newFolder.id)) {
+			deleteFolder(newFolder);
+		} else {
+			dispatchStack([...stack, newFolder]);
+		}
 	};
 
 	const excludeRootFolder = (folders: FolderAttributes[]) => {
@@ -20,14 +29,13 @@ export const useFolderNavigation = () => {
 	};
 
 	const initNavigationFolders = (folders: FolderAttributes[]) => {
-		console.log(folders);
 		dispatchStack(excludeRootFolder(folders));
 	};
 
 	const deleteFolder = (folder: FolderAttributes) => {
 		const index = stack.findIndex((stackFolder) => stackFolder.id === folder.id);
 
-		dispatchStack(stack.slice(index, stack.length));
+		dispatchStack(stack.splice(0, index + 1));
 	};
 
 	const clearNavigation = () => {
@@ -36,6 +44,7 @@ export const useFolderNavigation = () => {
 
 	return {
 		stack,
+		rootFolder,
 		addFolder,
 		deleteFolder,
 		clearNavigation,

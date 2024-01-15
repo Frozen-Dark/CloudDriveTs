@@ -1,21 +1,18 @@
 import { FolderAttributes } from "@app/providers/FolderProvider/lib/FolderContext";
 import { createContext } from "react";
 
-interface FolderNavigationStackType {
+interface FolderNavigationType {
 	stack: FolderAttributes[];
-}
-interface FolderNavigationFunctionsType {
+	rootFolder: FolderAttributes | null;
 	clearNavigation: () => void;
 	addFolder: (folder: FolderAttributes) => void;
 	deleteFolder: (folder: FolderAttributes) => void;
 	initNavigationFolders: (folders: FolderAttributes[]) => void;
 }
 
-export const FolderNavigationStack = createContext<FolderNavigationStackType>({
-	stack: []
-});
-
-export const FolderNavigationFunctions = createContext<FolderNavigationFunctionsType>({
+export const FolderNavigation = createContext<FolderNavigationType>({
+	stack: [],
+	rootFolder: null,
 	addFolder: () => {},
 	deleteFolder: () => {},
 	clearNavigation: () => {},

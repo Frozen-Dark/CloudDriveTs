@@ -1,7 +1,6 @@
 import cls from "./CreateFolder.module.scss";
 import { useContext, useState } from "react";
 import { classNames } from "@lib/classNames/classNames";
-import Text from "@ui/Text/Text";
 import Input from "@ui/Input/Input";
 import Button, { ButtonSize, ButtonTheme } from "@ui/Button/Button";
 import Modal from "@ui/Modal/Modal";
@@ -14,7 +13,7 @@ import { IconLightName } from "@lib/icons/icons";
 const CreateFolder = ({ className }: { className?: string }) => {
 	const [folderName, setFolderName] = useState<string>("");
 	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const { parentFolder } = useContext(FolderContext);
+	const { parentFolder, addFolder } = useContext(FolderContext);
 
 	const onChangeName = (value: string) => {
 		setFolderName(value);
@@ -23,7 +22,10 @@ const CreateFolder = ({ className }: { className?: string }) => {
 	const onCreateHandler = async () => {
 		const parentId = parentFolder?.id;
 		if (parentId) {
-			await createFolder({ folderName, parentId });
+			const response = await createFolder({ folderName, parentId });
+			if (response?.status === 200) {
+				addFolder(response.data.folder);
+			}
 			onCloseHandler();
 		}
 	};
@@ -39,9 +41,6 @@ const CreateFolder = ({ className }: { className?: string }) => {
 			</div>
 			<Modal isOpen={isOpen} lazy={true} onClose={onCloseHandler}>
 				<div className={classNames(cls.CreateFolder, {}, [className])}>
-					<div className={cls.titleWrapper}>
-						<Text title={"Новая папка"} />
-					</div>
 					<div style={{ width: "100%", padding: "20px" }}>
 						<Input
 							type={"text"}
