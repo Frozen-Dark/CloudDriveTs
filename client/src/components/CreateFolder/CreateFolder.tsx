@@ -1,5 +1,5 @@
 import cls from "./CreateFolder.module.scss";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { classNames } from "@lib/classNames/classNames";
 import Input from "@ui/Input/Input";
 import Button, { ButtonSize, ButtonTheme } from "@ui/Button/Button";
@@ -9,6 +9,7 @@ import { observer } from "mobx-react";
 import { FolderContext } from "@app/providers/FolderProvider/lib/FolderContext";
 import Icon, { IconSize } from "@ui/Icon/Icon";
 import { IconLightName } from "@lib/icons/icons";
+import Text from "@ui/Text/Text";
 
 const CreateFolder = ({ className }: { className?: string }) => {
 	const [folderName, setFolderName] = useState<string>("");
@@ -32,6 +33,7 @@ const CreateFolder = ({ className }: { className?: string }) => {
 
 	const onCloseHandler = () => {
 		setIsOpen(false);
+		setFolderName("");
 	};
 
 	return (
@@ -41,12 +43,15 @@ const CreateFolder = ({ className }: { className?: string }) => {
 			</div>
 			<Modal isOpen={isOpen} lazy={true} onClose={onCloseHandler}>
 				<div className={classNames(cls.CreateFolder, {}, [className])}>
+					<div className={cls.titleWrapper}>
+						<Text title={"Создать папку"} />
+					</div>
 					<div style={{ width: "100%", padding: "20px" }}>
 						<Input
 							type={"text"}
 							className={cls.input}
 							placeholder={"Имя папки"}
-							autoFocus={true}
+							autoFocus={isOpen}
 							onChange={onChangeName}
 							value={folderName}
 						/>

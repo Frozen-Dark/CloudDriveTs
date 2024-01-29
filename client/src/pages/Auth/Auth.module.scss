@@ -1,12 +1,12 @@
 .container {
 	max-width: 490px;
-
 	margin: 100px auto;
 	padding: 40px;
 
 	border-radius: 20px;
 	background-color: var(--color_background_content);
 	border: 1px solid var(--separator);
+	font-size: var(--font-line-s);
 }
 
 .form__title {

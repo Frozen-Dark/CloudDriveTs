@@ -6,6 +6,7 @@ import User from "@store/User";
 import { AppRoutes, RoutePath } from "@config/routeConfig/routeConfig";
 import { login, registration } from "@actions/user";
 import Button, { ButtonTheme } from "@ui/Button/Button";
+import Input from "@ui/Input/Input";
 
 const Auth = () => {
 	const navigate = useNavigate();
@@ -43,20 +44,20 @@ const Auth = () => {
 				<div>
 					<h2 className={classes.form__title}>Вход</h2>
 
-					<input
+					<Input
 						className={classes.authInput}
 						value={email}
-						onChange={(e) => setEmail(e.target.value)}
+						onChange={(value) => setEmail(value)}
 						placeholder={"E-mail"}
 						type={"text"}
 					/>
 
-					<input
+					<Input
 						className={classes.authInput}
+						onChange={(value) => setPassword(value)}
 						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						placeholder={"Пароль"}
 						type={"password"}
+						placeholder={"Пароль"}
 					/>
 
 					<Button
@@ -70,19 +71,19 @@ const Auth = () => {
 			) : (
 				<div className="form">
 					<h2 className={classes.form__title}>Регистрация</h2>
-					<input
+					<Input
 						className={classes.authInput}
 						value={email}
-						onChange={(e) => setEmail(e.target.value)}
+						onChange={(value) => setEmail(value)}
 						placeholder={"E-mail"}
 						type={"text"}
 					/>
 
-					<input
+					<Input
 						className={classes.authInput}
 						value={password}
 						required
-						onChange={(e) => setPassword(e.target.value)}
+						onChange={(value) => setPassword(value)}
 						placeholder={"Пароль"}
 						type={"password"}
 					/>
