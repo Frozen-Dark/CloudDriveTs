@@ -1,7 +1,7 @@
 import { User, UserAttributes, UserCreationAttributes } from "@models/models";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
-import tokenService, { Tokens, UserDecoded } from "./tokenService";
+import tokenService, { Tokens } from "./tokenService";
 import UserDto from "@dto/UserDto";
 import { Model } from "sequelize";
 import { UseragentData } from "@middlewares/userAgentMiddleware";
