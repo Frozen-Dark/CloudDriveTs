@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register index.ts",
+    "build": "npx tsc",
     "ts": "npx tsc -w"
   },
   "keywords": [],
