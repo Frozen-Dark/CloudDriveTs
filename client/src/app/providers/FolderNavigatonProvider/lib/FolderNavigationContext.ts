@@ -6,6 +6,7 @@ interface FolderNavigationType {
 	rootFolder: FolderAttributes | null;
 	clearNavigation: () => void;
 	addFolder: (folder: FolderAttributes) => void;
+	setRootFolder: (folder: FolderAttributes) => void;
 	deleteFolder: (folder: FolderAttributes) => void;
 	initNavigationFolders: (folders: FolderAttributes[]) => void;
 }
@@ -14,6 +15,7 @@ export const FolderNavigation = createContext<FolderNavigationType>({
 	stack: [],
 	rootFolder: null,
 	addFolder: () => {},
+	setRootFolder: () => {},
 	deleteFolder: () => {},
 	clearNavigation: () => {},
 	initNavigationFolders: () => {}

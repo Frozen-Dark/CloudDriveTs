@@ -32,7 +32,8 @@ const Disk = () => {
 	const [addClasses, setAddClasses] = useState("");
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-	const { addFolder, deleteFolder, clearNavigation, initNavigationFolders } = useContext(FolderNavigation);
+	const { addFolder, deleteFolder, clearNavigation, initNavigationFolders, setRootFolder } =
+		useContext(FolderNavigation);
 	const { folders, setFolders, setParentFolder } = useContext(FolderContext);
 	const { files, setFiles } = useContext(FileContext);
 
@@ -71,10 +72,9 @@ const Disk = () => {
 		if (response?.status === 200) {
 			const { folders, parentFolder, files } = response.data;
 			setParentFolder(parentFolder);
+			addFolder(parentFolder);
 			setFolders(folders);
 			setFiles(files);
-			addFolder(parentFolder);
-			if (id) localStorage.setItem("parentId", String(id));
 		}
 	};
 
@@ -83,9 +83,11 @@ const Disk = () => {
 		if (response?.status === 200) {
 			const { folders, parentFolder, files } = response.data;
 			setParentFolder(parentFolder);
+			setRootFolder(parentFolder);
 			setFolders(folders);
 			setFiles(files);
 		}
+
 		if (id) {
 			const response = await getFoldersToRootFolder({ parentId: id });
 			if (response?.status === 200) {

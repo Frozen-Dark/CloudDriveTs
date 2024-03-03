@@ -10,7 +10,8 @@
 		"lint:ts": "eslint \"**/*.{ts,tsx}\"",
 		"lint:ts --fix": "eslint \"**/*.{ts,tsx}\" --fix",
 		"lint:style": "npx stylelint **/*.scss",
-		"lint:style:fix": "npx stylelint **/*.scss --fix"
+		"lint:style:fix": "npx stylelint **/*.scss --fix",
+		"start:build": "npx serve -p 3000 product/"
 	},
 	"keywords": [],
 	"author": "Sergey",

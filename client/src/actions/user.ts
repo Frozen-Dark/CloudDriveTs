@@ -1,5 +1,6 @@
 import axios from "axios";
 import User, { UserAttributes } from "@store/User";
+import FolderCore from "@app/providers/FolderProvider/lib/FolderCore";
 
 const API_URL = "http://localhost:5000";
 axios.defaults.withCredentials = true;
@@ -72,6 +73,7 @@ export const registration = async ({ email, password }: { email: string; passwor
 			User.setIsAuth(true);
 			User.userData = user;
 			User.token = tokens.accessToken;
+			FolderCore.setParentId(null);
 		}
 	} catch (e) {
 		console.log(e);
@@ -82,7 +84,7 @@ export const refresh = async (): Promise<void> => {
 	try {
 		const response = await axios.get<UserWithTokens>(`${API_URL}/api/user/refresh`, { withCredentials: true });
 
-		if (response.status === 200) {
+		if (response && response.status === 200) {
 			const { user, tokens } = response.data;
 
 			User.token = tokens.accessToken;

@@ -10,7 +10,7 @@ interface TopNavigationProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const TopNavigation = ({ className, openFolder }: TopNavigationProps) => {
-	const { stack, rootFolder } = useContext(FolderNavigation);
+	const { stack, rootFolder, initNavigationFolders } = useContext(FolderNavigation);
 
 	const openFolderHandler = async (id: number | null) => {
 		await openFolder(id);

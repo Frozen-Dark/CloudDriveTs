@@ -3,7 +3,7 @@ import { FolderAttributes } from "@app/providers/FolderProvider/lib/FolderContex
 
 export const useFolderNavigation = () => {
 	const [stack, dispatchStack] = useState<FolderAttributes[]>([]);
-	const [rootFolder, setRootFolder] = useState<FolderAttributes | null>(null);
+	const [rootFolder, setRootFolderState] = useState<FolderAttributes | null>(null);
 
 	const addFolder = (newFolder: FolderAttributes) => {
 		if (!newFolder.parentId) {
@@ -23,9 +23,13 @@ export const useFolderNavigation = () => {
 			if (folder.parentId) {
 				return true;
 			}
-			setRootFolder({ ...folder, folderName: "Мой диск" });
+			setRootFolder(folder);
 			return false;
 		});
+	};
+
+	const setRootFolder = (folder: FolderAttributes) => {
+		setRootFolderState({ ...folder, folderName: "Мой диск" });
 	};
 
 	const initNavigationFolders = (folders: FolderAttributes[]) => {
@@ -47,6 +51,7 @@ export const useFolderNavigation = () => {
 		rootFolder,
 		addFolder,
 		deleteFolder,
+		setRootFolder,
 		clearNavigation,
 		initNavigationFolders
 	};
