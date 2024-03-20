@@ -26,7 +26,7 @@ const TopNavigation = ({ className, openFolder }: TopNavigationProps) => {
 
 			{stack.map((folder) => (
 				<Fragment key={folder.id}>
-					<Text style={{ paddingTop: "3px" }} title={" > "} />
+					<Text style={{}} title={" > "} />
 					<Item onClick={() => openFolderHandler(folder.id)} text={folder.folderName} />
 				</Fragment>
 			))}

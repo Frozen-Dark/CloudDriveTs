@@ -12,6 +12,7 @@ export const useFile = () => {
 	const setFiles = (files: FileAttributes[]) => {
 		dispatchFiles(sort(files));
 	};
+
 	const clearFiles = () => {
 		dispatchFiles([]);
 	};

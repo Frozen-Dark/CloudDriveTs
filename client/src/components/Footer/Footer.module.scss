@@ -1,0 +1,19 @@
+footer {
+	height: 40px;
+	width: 100vw;
+	padding: 0 20px;
+
+	position: absolute;
+	bottom: 0;
+	left: 0;
+
+	background-color: var(--color_background_content);
+}
+
+.wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

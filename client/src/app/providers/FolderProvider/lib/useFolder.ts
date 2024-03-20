@@ -17,6 +17,7 @@ export const useFolder = () => {
 			FolderCore.setParentId(null);
 			return setParentFolderState(null);
 		}
+
 		FolderCore.setParentId(folder.parentId);
 		setParentFolderState(folder);
 	};

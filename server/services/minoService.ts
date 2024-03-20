@@ -1,7 +1,6 @@
 import { Client } from "minio";
 import { DirType } from "@services/folderService";
 import { Buffer } from "buffer";
-import ApiError from "@error/ApiError";
 
 class MinoService {
 	getNameAndPath({ userId, fileId }: { userId: number; fileId: number }) {

@@ -10,7 +10,7 @@ const Header = () => {
 
 	return (
 		<>
-			<div className={cls.header}>
+			<header className={cls.header}>
 				<div className={cls.wrapper}>
 					<div className={cls.logo}>
 						<LogoIcon className={cls.logoSvg} />
@@ -22,7 +22,7 @@ const Header = () => {
 						<ProfileAvatar />
 					</div>
 				</div>
-			</div>
+			</header>
 			<Modal className={cls.modal} isOpen={isOpenProfile} onClose={() => profileDispatch(false)} lazy={false}>
 				<Profile />
 			</Modal>

@@ -25,7 +25,7 @@ class FileService {
 
 	async getFilesByParentId({ userId, parentId }: { userId: number; parentId: number }) {
 		if (!userId || !parentId) {
-			throw ApiError.badRequest("Некорректные данные для получения файла");
+			throw ApiError.badRequest("Некорректные данные для получения файлов");
 		}
 
 		const files = await File.findAll({ where: { userId, parentId } });
