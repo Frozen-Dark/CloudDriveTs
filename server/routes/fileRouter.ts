@@ -11,4 +11,6 @@ router.put("/move", fileController.move);
 
 router.post("/getFilesByFolderId", fileController.getFilesByParentId);
 
+router.post("link/getFilesByLink", () => {});
+
 export default router;
